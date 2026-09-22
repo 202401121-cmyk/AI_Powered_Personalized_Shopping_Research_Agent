@@ -1,0 +1,20 @@
+{
+  "raw_query": "something for my mom",
+  "category": null,
+  "category_label": null,
+  "use_case": null,
+  "budget": null,
+  "region": "IN",
+  "hard_rules": [],
+  "exclusions": [],
+  "needs_clarification": true,
+  "clarification_question": "What kind of product are you looking for?",
+  "clarification_options": [
+    "Kitchen appliance",
+    "Phone",
+    "Smartwatch",
+    "Something else"
+  ],
+  "show_example_requests": false,
+  "detected_by": "llm"
+}

@@ -1,0 +1,48 @@
+{
+  "$defs": {
+    "EnrichTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "product_id": {
+          "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+          "title": "Product Id",
+          "type": "string"
+        },
+        "product_name": {
+          "maxLength": 150,
+          "title": "Product Name",
+          "type": "string"
+        },
+        "criterion_key": {
+          "maxLength": 64,
+          "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+          "title": "Criterion Key",
+          "type": "string"
+        }
+      },
+      "required": [
+        "product_id",
+        "product_name",
+        "criterion_key"
+      ],
+      "title": "EnrichTarget",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "targets": {
+      "items": {
+        "$ref": "#/$defs/EnrichTarget"
+      },
+      "maxItems": 15,
+      "title": "Targets",
+      "type": "array"
+    }
+  },
+  "required": [
+    "targets"
+  ],
+  "title": "EnrichInput",
+  "type": "object"
+}

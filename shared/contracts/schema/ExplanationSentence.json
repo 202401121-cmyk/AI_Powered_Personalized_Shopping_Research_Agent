@@ -1,0 +1,39 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "text": {
+      "maxLength": 400,
+      "minLength": 3,
+      "title": "Text",
+      "type": "string"
+    },
+    "claim_ids": {
+      "items": {
+        "pattern": "^clm_[a-f0-9]{8,64}$",
+        "type": "string"
+      },
+      "title": "Claim Ids",
+      "type": "array"
+    },
+    "supported": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "NLI verdict; None when not checked",
+      "title": "Supported"
+    }
+  },
+  "required": [
+    "text",
+    "claim_ids",
+    "supported"
+  ],
+  "title": "ExplanationSentence",
+  "type": "object"
+}

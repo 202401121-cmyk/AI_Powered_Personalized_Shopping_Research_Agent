@@ -1,0 +1,70 @@
+{
+  "category": "laptop",
+  "use_case": "coding",
+  "criteria": [
+    {
+      "key": "cpu_performance",
+      "label": "CPU performance",
+      "definition": "How fast it compiles code and runs tools like Docker and IDEs.",
+      "direction": "higher_is_better",
+      "unit": null,
+      "default_weight": 8.0,
+      "is_value_for_money": false
+    },
+    {
+      "key": "battery_life",
+      "label": "Battery life",
+      "definition": "Hours of real work on one charge, away from a plug.",
+      "direction": "higher_is_better",
+      "unit": "h",
+      "default_weight": 7.0,
+      "is_value_for_money": false
+    },
+    {
+      "key": "keyboard_comfort",
+      "label": "Keyboard comfort",
+      "definition": "How pleasant the keys are for long typing sessions.",
+      "direction": "higher_is_better",
+      "unit": null,
+      "default_weight": 6.0,
+      "is_value_for_money": false
+    },
+    {
+      "key": "display_quality",
+      "label": "Display quality",
+      "definition": "Sharpness, brightness and eye comfort of the screen.",
+      "direction": "higher_is_better",
+      "unit": null,
+      "default_weight": 5.0,
+      "is_value_for_money": false
+    },
+    {
+      "key": "weight",
+      "label": "Weight",
+      "definition": "How heavy it is to carry every day; lighter is better.",
+      "direction": "lower_is_better",
+      "unit": "kg",
+      "default_weight": 5.0,
+      "is_value_for_money": false
+    },
+    {
+      "key": "build_durability",
+      "label": "Build durability",
+      "definition": "How well the body, hinge and ports hold up over years.",
+      "direction": "higher_is_better",
+      "unit": null,
+      "default_weight": 4.0,
+      "is_value_for_money": false
+    },
+    {
+      "key": "value_for_money",
+      "label": "Value for money",
+      "definition": "How much laptop you get for the price you pay.",
+      "direction": "higher_is_better",
+      "unit": null,
+      "default_weight": 6.0,
+      "is_value_for_money": true
+    }
+  ],
+  "source": "generated"
+}

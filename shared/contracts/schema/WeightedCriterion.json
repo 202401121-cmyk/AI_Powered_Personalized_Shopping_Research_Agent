@@ -1,0 +1,53 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "key": {
+      "maxLength": 64,
+      "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+      "title": "Key",
+      "type": "string"
+    },
+    "weight": {
+      "description": "0 to 10, as the user sees it",
+      "maximum": 10.0,
+      "minimum": 0.0,
+      "title": "Weight",
+      "type": "number"
+    },
+    "normalized": {
+      "description": "Share of the total; all normalized values add up to 1",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Normalized",
+      "type": "number"
+    },
+    "origin": {
+      "enum": [
+        "answered",
+        "remembered",
+        "default",
+        "skipped",
+        "manual"
+      ],
+      "title": "Origin",
+      "type": "string"
+    },
+    "uncertainty": {
+      "default": 0.5,
+      "description": "How unsure we are of this weight; used by the interview and simulations",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Uncertainty",
+      "type": "number"
+    }
+  },
+  "required": [
+    "key",
+    "weight",
+    "normalized",
+    "origin",
+    "uncertainty"
+  ],
+  "title": "WeightedCriterion",
+  "type": "object"
+}

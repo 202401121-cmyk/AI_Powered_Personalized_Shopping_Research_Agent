@@ -1,0 +1,152 @@
+{
+  "$defs": {
+    "Money": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "minimum": 0,
+          "title": "Amount",
+          "type": "number"
+        },
+        "currency": {
+          "default": "INR",
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "title": "Money",
+      "type": "object"
+    },
+    "Offer": {
+      "additionalProperties": false,
+      "properties": {
+        "product_id": {
+          "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+          "title": "Product Id",
+          "type": "string"
+        },
+        "variant_id": {
+          "anyOf": [
+            {
+              "pattern": "^var_[A-Za-z0-9_-]{3,64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Variant Id"
+        },
+        "store": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Store",
+          "type": "string"
+        },
+        "url": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        },
+        "listing_title": {
+          "maxLength": 300,
+          "title": "Listing Title",
+          "type": "string"
+        },
+        "price": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Money"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "availability": {
+          "default": "unknown",
+          "enum": [
+            "in_stock",
+            "out_of_stock",
+            "unknown"
+          ],
+          "title": "Availability",
+          "type": "string"
+        },
+        "as_of": {
+          "format": "date-time",
+          "title": "As Of",
+          "type": "string"
+        },
+        "title_matched": {
+          "description": "Listing title contains the model name",
+          "title": "Title Matched",
+          "type": "boolean"
+        },
+        "variant_matched": {
+          "default": false,
+          "title": "Variant Matched",
+          "type": "boolean"
+        },
+        "over_budget": {
+          "default": false,
+          "title": "Over Budget",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "product_id",
+        "variant_id",
+        "store",
+        "url",
+        "listing_title",
+        "price",
+        "availability",
+        "as_of",
+        "title_matched",
+        "variant_matched",
+        "over_budget"
+      ],
+      "title": "Offer",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "offers": {
+      "items": {
+        "$ref": "#/$defs/Offer"
+      },
+      "title": "Offers",
+      "type": "array"
+    },
+    "no_offer": {
+      "description": "Products with no matching listing -> a store search link",
+      "patternProperties": {
+        "^prd_[A-Za-z0-9_-]{3,64}$": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "title": "No Offer",
+      "type": "object"
+    }
+  },
+  "required": [
+    "offers",
+    "no_offer"
+  ],
+  "title": "CommerceResult",
+  "type": "object"
+}

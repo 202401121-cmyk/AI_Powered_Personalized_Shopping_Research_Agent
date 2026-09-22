@@ -1,0 +1,214 @@
+{
+  "$defs": {
+    "Claim": {
+      "additionalProperties": false,
+      "description": "One statement about one product, always with its exact quote (build rule 4).",
+      "properties": {
+        "id": {
+          "pattern": "^clm_[a-f0-9]{8,64}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "source_id": {
+          "pattern": "^src_[a-f0-9]{8,64}$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "product_raw_name": {
+          "maxLength": 150,
+          "minLength": 1,
+          "title": "Product Raw Name",
+          "type": "string"
+        },
+        "criterion_key": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "None = general opinion",
+          "title": "Criterion Key"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A spec value, e.g. 1.4 for kg",
+          "title": "Value"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "maxLength": 16,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "maximum": 10.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "0 to 10 judgement for this criterion",
+          "title": "Score"
+        },
+        "quote": {
+          "description": "Exact words from the source",
+          "maxLength": 600,
+          "minLength": 3,
+          "title": "Quote",
+          "type": "string"
+        },
+        "claim_type": {
+          "$ref": "#/$defs/ClaimType"
+        },
+        "polarity": {
+          "enum": [
+            "positive",
+            "negative",
+            "neutral"
+          ],
+          "title": "Polarity",
+          "type": "string"
+        },
+        "weight": {
+          "default": 1.0,
+          "description": "Lowered by sarcasm, weak complaints (US-42)",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Weight",
+          "type": "number"
+        },
+        "retrieved_at": {
+          "format": "date-time",
+          "title": "Retrieved At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "source_id",
+        "product_raw_name",
+        "criterion_key",
+        "value",
+        "unit",
+        "score",
+        "quote",
+        "claim_type",
+        "polarity",
+        "weight",
+        "retrieved_at"
+      ],
+      "title": "Claim",
+      "type": "object"
+    },
+    "ClaimType": {
+      "description": "DR-05: community posts are experience or opinion, never spec, unless verified.",
+      "enum": [
+        "spec",
+        "experience",
+        "opinion"
+      ],
+      "title": "ClaimType",
+      "type": "string"
+    },
+    "EnrichTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "product_id": {
+          "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+          "title": "Product Id",
+          "type": "string"
+        },
+        "product_name": {
+          "maxLength": 150,
+          "title": "Product Name",
+          "type": "string"
+        },
+        "criterion_key": {
+          "maxLength": 64,
+          "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+          "title": "Criterion Key",
+          "type": "string"
+        }
+      },
+      "required": [
+        "product_id",
+        "product_name",
+        "criterion_key"
+      ],
+      "title": "EnrichTarget",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "new_claims": {
+      "description": "Only values a page actually supports",
+      "items": {
+        "$ref": "#/$defs/Claim"
+      },
+      "title": "New Claims",
+      "type": "array"
+    },
+    "attempted": {
+      "items": {
+        "$ref": "#/$defs/EnrichTarget"
+      },
+      "title": "Attempted",
+      "type": "array"
+    },
+    "searches_used": {
+      "default": 0,
+      "maximum": 6,
+      "minimum": 0,
+      "title": "Searches Used",
+      "type": "integer"
+    },
+    "llm_calls_used": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Llm Calls Used",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "new_claims",
+    "attempted",
+    "searches_used",
+    "llm_calls_used"
+  ],
+  "title": "EnrichResult",
+  "type": "object"
+}

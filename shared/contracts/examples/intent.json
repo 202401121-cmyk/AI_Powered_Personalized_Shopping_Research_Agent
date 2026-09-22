@@ -1,0 +1,35 @@
+{
+  "raw_query": "best laptop for coding under 70k, at least 16 GB RAM, not too heavy, no Zenith",
+  "category": "laptop",
+  "category_label": "Laptop",
+  "use_case": "coding",
+  "budget": {
+    "min": null,
+    "max": {
+      "amount": 70000.0,
+      "currency": "INR"
+    }
+  },
+  "region": "IN",
+  "hard_rules": [
+    {
+      "attribute": "ram_gb",
+      "operator": ">=",
+      "value": 16.0,
+      "unit": "GB",
+      "source_text": "at least 16 GB RAM"
+    }
+  ],
+  "exclusions": [
+    {
+      "kind": "brand",
+      "value": "Zenith",
+      "always": false
+    }
+  ],
+  "needs_clarification": false,
+  "clarification_question": null,
+  "clarification_options": [],
+  "show_example_requests": false,
+  "detected_by": "llm"
+}

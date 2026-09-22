@@ -1,0 +1,51 @@
+{
+  "$defs": {
+    "Provider": {
+      "enum": [
+        "groq",
+        "gemini",
+        "openrouter",
+        "cerebras"
+      ],
+      "title": "Provider",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "One row of config/models.yaml. The wrapper fits every input to these limits (US-26).",
+  "properties": {
+    "provider": {
+      "$ref": "#/$defs/Provider"
+    },
+    "model": {
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "Model",
+      "type": "string"
+    },
+    "context_window_tokens": {
+      "exclusiveMinimum": 0,
+      "title": "Context Window Tokens",
+      "type": "integer"
+    },
+    "max_output_tokens": {
+      "exclusiveMinimum": 0,
+      "title": "Max Output Tokens",
+      "type": "integer"
+    },
+    "trains_on_free_tier": {
+      "description": "True = never send personal tasks here",
+      "title": "Trains On Free Tier",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "provider",
+    "model",
+    "context_window_tokens",
+    "max_output_tokens",
+    "trains_on_free_tier"
+  ],
+  "title": "ModelLimits",
+  "type": "object"
+}

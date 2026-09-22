@@ -1,0 +1,65 @@
+{
+  "$defs": {
+    "StageName": {
+      "enum": [
+        "intake",
+        "criteria",
+        "interview",
+        "research",
+        "extract",
+        "match",
+        "verify",
+        "enrich",
+        "decide",
+        "explain",
+        "commerce"
+      ],
+      "title": "StageName",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "One Server-Sent Event for the live progress bar.",
+  "properties": {
+    "search_id": {
+      "pattern": "^srch_[A-Za-z0-9]{6,40}$",
+      "title": "Search Id",
+      "type": "string"
+    },
+    "stage": {
+      "$ref": "#/$defs/StageName"
+    },
+    "status": {
+      "enum": [
+        "started",
+        "finished",
+        "fallback",
+        "skipped",
+        "timeout",
+        "failed"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "message": {
+      "description": "Plain words for the user, e.g. 'Reading 12 Reddit threads'",
+      "maxLength": 200,
+      "title": "Message",
+      "type": "string"
+    },
+    "at": {
+      "format": "date-time",
+      "title": "At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "search_id",
+    "stage",
+    "status",
+    "message",
+    "at"
+  ],
+  "title": "ProgressEvent",
+  "type": "object"
+}

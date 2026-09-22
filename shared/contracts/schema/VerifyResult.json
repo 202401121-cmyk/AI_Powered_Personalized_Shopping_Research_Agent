@@ -1,0 +1,191 @@
+{
+  "$defs": {
+    "CommunitySignal": {
+      "additionalProperties": false,
+      "description": "US-42: whether communities agree about a product.",
+      "properties": {
+        "product_id": {
+          "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+          "title": "Product Id",
+          "type": "string"
+        },
+        "label": {
+          "enum": [
+            "consistent",
+            "split",
+            "single_source"
+          ],
+          "title": "Label",
+          "type": "string"
+        },
+        "communities": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Communities",
+          "type": "array"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "maxLength": 300,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "required": [
+        "product_id",
+        "label",
+        "communities",
+        "note"
+      ],
+      "title": "CommunitySignal",
+      "type": "object"
+    },
+    "ResolvedValue": {
+      "additionalProperties": false,
+      "properties": {
+        "product_id": {
+          "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+          "title": "Product Id",
+          "type": "string"
+        },
+        "criterion_key": {
+          "description": "A criterion key, or a hard-rule attribute such as 'ram_gb'",
+          "maxLength": 64,
+          "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+          "title": "Criterion Key",
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/ValueState"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "maximum": 10.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Score"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "supporting_claim_ids": {
+          "items": {
+            "pattern": "^clm_[a-f0-9]{8,64}$",
+            "type": "string"
+          },
+          "title": "Supporting Claim Ids",
+          "type": "array"
+        },
+        "conflicting_claim_ids": {
+          "items": {
+            "pattern": "^clm_[a-f0-9]{8,64}$",
+            "type": "string"
+          },
+          "title": "Conflicting Claim Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "product_id",
+        "criterion_key",
+        "state",
+        "score",
+        "value",
+        "confidence",
+        "supporting_claim_ids",
+        "conflicting_claim_ids"
+      ],
+      "title": "ResolvedValue",
+      "type": "object"
+    },
+    "ValueState": {
+      "enum": [
+        "known",
+        "disputed",
+        "unknown",
+        "estimated"
+      ],
+      "title": "ValueState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "values": {
+      "items": {
+        "$ref": "#/$defs/ResolvedValue"
+      },
+      "title": "Values",
+      "type": "array"
+    },
+    "community": {
+      "items": {
+        "$ref": "#/$defs/CommunitySignal"
+      },
+      "title": "Community",
+      "type": "array"
+    },
+    "dropped_unsourced": {
+      "description": "FR-25: products with no source, removed before scoring",
+      "items": {
+        "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+        "type": "string"
+      },
+      "title": "Dropped Unsourced",
+      "type": "array"
+    },
+    "trust_method": {
+      "enum": [
+        "learned",
+        "tier_order"
+      ],
+      "title": "Trust Method",
+      "type": "string"
+    }
+  },
+  "required": [
+    "values",
+    "community",
+    "dropped_unsourced",
+    "trust_method"
+  ],
+  "title": "VerifyResult",
+  "type": "object"
+}

@@ -1,0 +1,36 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "category": {
+      "maxLength": 64,
+      "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+      "title": "Category",
+      "type": "string"
+    },
+    "category_label": {
+      "maxLength": 60,
+      "title": "Category Label",
+      "type": "string"
+    },
+    "use_case": {
+      "anyOf": [
+        {
+          "maxLength": 120,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Use Case"
+    }
+  },
+  "required": [
+    "category",
+    "category_label",
+    "use_case"
+  ],
+  "title": "CriteriaInput",
+  "type": "object"
+}

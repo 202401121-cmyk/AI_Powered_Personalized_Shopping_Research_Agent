@@ -1,0 +1,116 @@
+{
+  "products": [
+    {
+      "id": "prd_nova_book_14",
+      "name": "Nova Book 14",
+      "brand": "Nova",
+      "kind": "product",
+      "aliases": [
+        "Nova 14"
+      ],
+      "variants": [
+        {
+          "id": "var_nova_book_14_16_512_in",
+          "label": "16 GB / 512 GB / India",
+          "attributes": {
+            "ram": "16GB",
+            "storage": "512GB",
+            "region": "IN"
+          }
+        }
+      ],
+      "recommender_count": 9,
+      "weighted_mentions": 7.4
+    },
+    {
+      "id": "prd_kestrel_slim_15",
+      "name": "Kestrel Slim 15",
+      "brand": "Kestrel",
+      "kind": "product",
+      "aliases": [],
+      "variants": [
+        {
+          "id": "var_kestrel_slim_15_16_512_in",
+          "label": "16 GB / 512 GB / India",
+          "attributes": {
+            "ram": "16GB",
+            "storage": "512GB",
+            "region": "IN"
+          }
+        }
+      ],
+      "recommender_count": 6,
+      "weighted_mentions": 5.1
+    },
+    {
+      "id": "prd_orion_play_15",
+      "name": "Orion Play 15",
+      "brand": "Orion",
+      "kind": "product",
+      "aliases": [],
+      "variants": [
+        {
+          "id": "var_orion_play_15_16_512_in",
+          "label": "16 GB / 512 GB / India",
+          "attributes": {
+            "ram": "16GB",
+            "storage": "512GB",
+            "region": "IN"
+          }
+        }
+      ],
+      "recommender_count": 2,
+      "weighted_mentions": 1.6
+    },
+    {
+      "id": "prd_aurora_air_13",
+      "name": "Aurora Air 13",
+      "brand": "Aurora",
+      "kind": "product",
+      "aliases": [],
+      "variants": [
+        {
+          "id": "var_aurora_air_13_16_512_in",
+          "label": "16 GB / 512 GB / India",
+          "attributes": {
+            "ram": "16GB",
+            "storage": "512GB",
+            "region": "IN"
+          }
+        }
+      ],
+      "recommender_count": 2,
+      "weighted_mentions": 1.6
+    },
+    {
+      "id": "prd_vela_pro_14",
+      "name": "Vela Pro 14",
+      "brand": "Vela",
+      "kind": "product",
+      "aliases": [],
+      "variants": [
+        {
+          "id": "var_vela_pro_14_16_512_in",
+          "label": "16 GB / 512 GB / India",
+          "attributes": {
+            "ram": "16GB",
+            "storage": "512GB",
+            "region": "IN"
+          }
+        }
+      ],
+      "recommender_count": 2,
+      "weighted_mentions": 1.6
+    }
+  ],
+  "alias_map": {
+    "Nova Book 14": "prd_nova_book_14",
+    "Kestrel Slim 15": "prd_kestrel_slim_15",
+    "Orion Play 15": "prd_orion_play_15",
+    "Aurora Air 13": "prd_aurora_air_13",
+    "Vela Pro 14": "prd_vela_pro_14",
+    "Nova 14": "prd_nova_book_14"
+  },
+  "unmatched": [],
+  "method": "model"
+}

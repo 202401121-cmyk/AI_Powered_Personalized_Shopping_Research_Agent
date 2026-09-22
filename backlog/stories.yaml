@@ -1,0 +1,929 @@
+# ShopSense product backlog: 51 stories (45 core = 216 pts, 5 Plus = 15 pts, 1 stretch = 8 pts).
+# Source of truth for GitHub issues: run scripts/create_github_issues.py after editing.
+# tier: core | plus (first to move if a sprint runs late) | stretch
+# EPICs: 1 User Discovery & Personalization · 2 Multi-Source Research & Retrieval ·
+#        3 Evidence, Product Intelligence & Verification · 4 Personalized Recommendation & Explainability ·
+#        5 Commerce & Purchase Discovery · 6 Platform Engineering, Security & Reliability
+
+stories:
+  # ---------------------------------------------------------------- EPIC 1
+  - id: US-01
+    title: Describe the need in plain words
+    req: [FR-01]
+    epic: 1
+    priority: Must
+    points: 5
+    sprint: 1
+    tier: core
+    role: shopper
+    goal: to describe what I need in my own words
+    benefit: I do not have to fill a form or know product jargon
+    criteria:
+      - One text box accepts up to 1,000 characters, and nothing else is needed to start
+      - It works for any physical product, such as "laptop for coding" or "pram for a newborn"
+      - Empty or unclear text gets one clear follow-up question, not an error
+      - A request with no product type, such as "something for my mom", gets one follow-up asking what kind of product, with 3 or 4 suggested categories as buttons
+      - If the follow-up reply is still unclear or off-topic, the app shows a few example requests and never guesses a category
+      - Research never starts until the category is known
+      - Each request is saved with a session ID
+
+  - id: US-02
+    title: Detect category, use, budget and rules
+    req: [FR-02]
+    epic: 1
+    priority: Must
+    points: 5
+    sprint: 1
+    tier: core
+    role: shopper
+    goal: the app to pick up the category, use, budget and rules I already mentioned
+    benefit: I am not asked twice
+    criteria:
+      - '"Gaming laptop under 80k" gives category laptop, use gaming, budget up to ₹80,000; k, lakh and ₹ are understood, and ₹ sets the region to India'
+      - If no budget is stated, none is assumed
+      - An ambiguous word such as "watch" makes the app ask which kind before it researches
+      - The result is a validated Intent shown back to the user, who can edit it
+      - If every LLM provider fails, a keyword rule layer still detects the category and budget
+
+  - id: US-03
+    title: Generate category-specific criteria
+    req: [FR-03, DR-07]
+    epic: 1
+    priority: Must
+    points: 5
+    sprint: 1
+    tier: core
+    role: shopper
+    goal: criteria that fit the product I am buying
+    benefit: the comparison is about what matters for that product
+    criteria:
+      - The app generates 7 to 10 category-specific criteria and never vague ones like "quality"
+      - Value for money is always one of the criteria
+      - "[DR-07] Criteria change with the intended use, for example gaming versus travel"
+      - It works for a category it has never seen, and saves the criteria so they are generated once
+      - If fewer than 6 come back, it retries once, then uses a fixed fallback set for that kind of product
+      - Each criterion has a one-line plain-English definition
+
+  - id: US-04
+    title: Smart interview that asks only what matters
+    req: [FR-04]
+    epic: 1
+    priority: Should
+    points: 8
+    sprint: 4
+    tier: core
+    ml: true
+    role: shopper
+    goal: to be asked only the questions that matter most for me
+    benefit: the interview is short
+    criteria:
+      - Each criterion's weight is a distribution that starts from a default and updates after every answer
+      - The next question is about the criterion the app is least sure of that also matters most
+      - The interview stops when the top criteria are settled, or after 10 questions at most
+      - On 50 simulated shoppers, it matches the fixed questionnaire's accuracy with 30% fewer questions (target)
+      - If the model errors, the interview continues in fixed order
+
+  - id: US-05
+    title: One question at a time, adapted to earlier answers
+    req: [FR-05]
+    epic: 1
+    priority: Must
+    points: 8
+    sprint: 1
+    tier: core
+    role: shopper
+    goal: questions asked one at a time and adapted to my earlier answers
+    benefit: it feels like a conversation
+    criteria:
+      - One question per turn in a chat window, with quick-reply buttons and free text
+      - An answer that settles a topic removes related questions; "under 30k" skips premium-tier questions
+      - The user can go back and change an answer, and later questions update
+      - The first version asks criteria in each category's default importance order; US-04 replaces that ordering
+      - Each turn responds within 5 seconds
+
+  - id: US-06
+    title: Remember preferences across searches
+    req: [FR-06]
+    epic: 1
+    priority: Should
+    points: 8
+    sprint: 5
+    tier: core
+    ml: true
+    role: returning shopper
+    goal: the app to remember what I told it before
+    benefit: I do not repeat myself
+    criteria:
+      - Each lasting preference, such as "sensitive to noise" or "never Brand X", is saved with an embedding
+      - In a new session, the 5 most similar past preferences above similarity 0.7 pre-fill answers, marked "remembered" and changeable in one click
+      - Preferences older than 90 days count for less
+      - Preferences never cross categories wrongly; a laptop budget does not fill a headphone budget
+      - Repeated questions fall by 50% for users with history (target, measured on 20 seeded sessions)
+      - If embeddings fail, the interview runs without pre-filled answers
+
+  - id: US-07
+    title: Explain unfamiliar terms on request
+    req: [FR-07]
+    epic: 1
+    priority: Should
+    points: 2
+    sprint: 6
+    tier: core
+    role: non-technical shopper
+    goal: unfamiliar terms explained when I ask
+    benefit: I can answer questions about things I do not know yet
+    criteria:
+      - Every question containing a technical term has a "What does this mean?" link
+      - Explanations are at most 40 words, in plain language, and say why the term matters for this use
+      - Opening an explanation does not count as an answer
+      - Definitions come from the saved criteria in US-03, so no extra LLM call is needed
+
+  - id: US-08
+    title: Understand rough answers like "medium"
+    req: [FR-08]
+    epic: 1
+    priority: Must
+    points: 3
+    sprint: 2
+    tier: core
+    role: shopper
+    goal: to answer in rough terms like "medium" or "good enough"
+    benefit: I am not forced to invent numbers
+    criteria:
+      - '"Low", "medium" and "high" map to weights 2, 5 and 8 out of 10; "good enough" maps to 3'
+      - The user can switch to an exact value at any time
+      - The mapping is a single table with unit tests, applied the same way everywhere
+
+  - id: US-09
+    title: Keep must-haves separate from preferences
+    req: [FR-09, DR-08]
+    epic: 1
+    priority: Must
+    points: 5
+    sprint: 3
+    tier: core
+    role: shopper
+    goal: my must-haves kept separate from my preferences
+    benefit: a product breaking a must-have is never recommended however good it is otherwise
+    criteria:
+      - The rubric has two lists: hard rules, and preferences weighted 0 to 10 that add up to 1
+      - The user sees which of their statements became hard rules and can switch any of them
+      - "[DR-08] Hard rules only filter products; preferences only change the order"
+      - Criteria the interview did not ask about keep the category's default weight
+      - A user's manual weight edits survive if the rubric is rebuilt
+
+  - id: US-10
+    title: Rule out brands and features
+    req: [FR-10]
+    epic: 1
+    priority: Must
+    points: 3
+    sprint: 3
+    tier: core
+    role: shopper
+    goal: to rule out brands or features I do not want
+    benefit: I never see them
+    criteria:
+      - Brand, model or feature exclusions can be typed in words, such as "no Xiaomi" or "not touchscreen"
+      - Excluded items never appear in results, and they show in the filtered-out list with the reason
+      - An exclusion can be marked "always" and is then saved to memory
+
+  - id: US-11
+    title: See and control what the app remembers
+    req: [FR-22]
+    epic: 1
+    priority: Should
+    points: 3
+    sprint: 6
+    tier: core
+    role: shopper
+    goal: to see and control what the app remembers about me
+    benefit: I stay in charge of my own data
+    criteria:
+      - The user can view, edit, export as JSON, and delete every stored preference
+      - Deleting a preference also deletes its embedding
+      - Deleting the account removes all of that user's searches and preferences
+
+  - id: US-39
+    title: Understand questions, skips and off-topic replies in the interview
+    req: [FR-26]
+    epic: 1
+    priority: Must
+    points: 3
+    sprint: 4
+    tier: core
+    role: shopper
+    goal: the interview to understand when I ask something back, skip, or change my mind
+    benefit: it never misreads me
+    criteria:
+      - Each reply is classified as an answer, a question, an answer with a question, a skip, a correction, off-topic, or unclear
+      - A question gets a short answer, then the same interview question is asked again; the answer comes from the criterion's saved definition first, and the LLM only if the definition doesn't cover it
+      - An answer with a question records the answer, then answers the question
+      - A skip leaves that criterion at its default weight; a correction updates the earlier answer
+      - Off-topic text gets a one-line redirect back to the current question
+      - An unclear reply gets one rephrased question with quick-reply buttons, never a guess
+      - After two unclear or off-topic replies to the same question, the app skips it, keeps the default weight, and marks it "skipped" so the user can answer later
+      - Questions, redirects and skips never count as answers, and the remaining questions continue from where the interview was
+      - Reply text is data; nothing typed in a reply can instruct the AI
+      - On 70 sample replies (10 per type), at least 90% are classified correctly
+      - If the classifier fails, the reply is treated as an answer and the user can correct it
+
+  # ---------------------------------------------------------------- EPIC 2
+  - id: US-12
+    title: Research several sources in parallel
+    req: [FR-11]
+    epic: 2
+    priority: Must
+    points: 8
+    sprint: 2
+    tier: core
+    role: shopper
+    goal: the app to research several sources
+    benefit: the answer is not one site's opinion
+    criteria:
+      - It builds 4 to 6 search queries from the rubric (category, use, budget, region), not from the raw text, and adds a comparison query ("X vs Y") once candidates are known
+      - It pulls from at least 3 source types: Reddit threads, web search results and review sites
+      - Sources run in parallel, and one failing source never stops the run
+      - Near-duplicate threads (more than 60% title overlap) are merged
+      - Every page or thread is stored with its URL and fetch time
+      - Provider use is counted so the free-tier limits are respected
+
+  - id: US-13
+    title: Score Reddit quality and count recommenders exactly
+    req: [FR-23]
+    epic: 2
+    priority: Should
+    points: 3
+    sprint: 2
+    tier: core
+    role: shopper
+    goal: strong Reddit advice separated from noise
+    benefit: one loud or fake comment does not decide my result
+    criteria:
+      - Each thread is scored on upvotes, comment count, age and subreddit relevance, and low scorers are dropped
+      - Comment trees are read three levels deep; each comment is scored on upvotes, length and whether it names a specific model
+      - Distinct recommenders per product are counted with an Aho-Corasick matcher over names and aliases, with no LLM; one user posting ten times counts once
+      - Matching respects word boundaries and prefers the longest name, so "1000XM5" inside "WF-1000XM5" is not a separate product
+      - Threads lose weight with age, with a half-life of 180 days
+      - The same threads always give the same counts
+
+  - id: US-38
+    title: Add YouTube and hard-to-read pages
+    req: [FR-11]
+    epic: 2
+    priority: Must
+    points: 5
+    sprint: 5
+    tier: core
+    role: shopper
+    goal: video reviews and hard-to-read pages included
+    benefit: the research covers where people actually review products
+    criteria:
+      - The YouTube Data API finds 3 to 5 relevant review videos per search
+      - Transcripts are used only if YouTube's terms allow the chosen method (checked in Sprint 1); otherwise title, description and top comments are used
+      - Pages that fail a simple fetch or need JavaScript are read through Jina Reader
+      - Video and page text goes through the same extraction and quote rules as every other source
+      - If YouTube or Jina fails, the search continues without them and the coverage note says so
+
+  - id: US-42
+    title: Read community posts like a person would
+    req: [FR-27]
+    epic: 2
+    priority: Should
+    points: 5
+    sprint: 5
+    tier: plus
+    role: shopper
+    goal: the app to read community posts the way a person would
+    benefit: sarcasm, weak complaints or one community's taste don't mislead my result
+    criteria:
+      - Negation words (not, never, barely, far from) flip or weaken the sentiment of their phrase, so "not good for gym use" is never a gym recommendation
+      - Common sarcasm markers ("yeah right", "sure, if you say so") reduce the weight of the claim
+      - Complaints backed by several independent sources, or naming a concrete failure, count more than a single vague complaint
+      - Sentiment per product is compared across communities and labelled consistent, split or single-source
+      - A split shows both views with the community each came from; a single-source product gets one step lower confidence
+      - The comparison only runs with at least 2 communities and 3 mentions
+      - Tested on 40 labelled sentences and 10 products with known community splits
+
+  - id: US-36
+    title: Classifier for promotional and duplicate comments
+    req: [FR-23]
+    epic: 2
+    priority: Could
+    points: 8
+    sprint: 6
+    tier: stretch
+    ml: true
+    role: shopper
+    goal: promotional and duplicate Reddit comments down-weighted
+    benefit: shills do not skew the result
+    criteria:
+      - A classifier trained on 300 hand-labelled comments uses author age, duplicate text and link count
+      - It beats the simple rules from US-13 on F1
+      - Flagged comments are down-weighted and labelled, never deleted
+
+  # ---------------------------------------------------------------- EPIC 3
+  - id: US-14
+    title: Extract claims with exact quotes
+    req: [FR-12, DR-05]
+    epic: 3
+    priority: Must
+    points: 8
+    sprint: 2
+    tier: core
+    role: shopper
+    goal: claims pulled out of what people wrote
+    benefit: opinions become comparable evidence
+    criteria:
+      - The LLM reads each source separately and returns products mentioned, claims (criterion, value or 0 to 10 score, exact quote) and opinions
+      - Invalid output is retried once and then discarded, never repaired by guessing
+      - Every claim stores its source URL, quote and time
+      - "[DR-05] Community claims are typed experience; manufacturer and lab claims are typed spec"
+      - Product types such as "memory foam" are kept apart from buyable products
+      - A bad source never stops the run
+
+  - id: US-15
+    title: Match product names and variants
+    req: [FR-13, DR-02, DR-06]
+    epic: 3
+    priority: Must
+    points: 8
+    sprint: 3
+    tier: core
+    ml: true
+    role: shopper
+    goal: the same product recognised under all its names
+    benefit: I see one product with all its evidence, not four half-known ones
+    criteria:
+      - '"Sony WH-1000XM5", "XM5" and "1000XM5 headphones" become one product'
+      - A fine-tuned matching model decides each pair, and only confident matches merge; uncertain pairs stay separate
+      - "[DR-02] Versions that differ in price or specs, such as RAM, storage or region, are separate variants of one family"
+      - "[DR-06] Aliases are saved and reused in later searches"
+      - On held-out labelled pairs it beats fuzzy matching, with precision of 0.95 or better (target)
+      - If the model fails to load, fuzzy matching runs instead and the run is logged
+
+  - id: US-16
+    title: Learned source trust, disputes and unknowns
+    req: [FR-14, DR-03, DR-09]
+    epic: 3
+    priority: Must
+    points: 8
+    sprint: 3
+    tier: core
+    ml: true
+    role: shopper
+    goal: to be told when sources disagree
+    benefit: I can judge a contested fact myself instead of trusting an average
+    criteria:
+      - Claims for one product and criterion are combined using source weights
+      - "[DR-03] Manufacturer and lab sources outrank editorial reviews, and editorial outranks community posts"
+      - Each known site starts from a 0 to 100 trust score adjusted per category, kept in one config table that includes Indian review sites such as 91mobiles, Smartprix, Digit and Gadgets 360
+      - Affiliate pages (paths such as /advisor/ or /deals/) start lower than editorial reviews, and Reddit counts as community evidence, never editorial
+      - Weights are then learned; sources that often disagree with the wider consensus count for less
+      - When independent sources disagree strongly the state is Disputed, and both values are shown with their sources
+      - "[DR-09] With no trustworthy claim the state is Unknown, and it is never scored as zero"
+      - It resolves more of the 30 seeded conflicts correctly than majority voting (target)
+
+  - id: US-40
+    title: Never recommend an unsourced product
+    req: [FR-25]
+    epic: 3
+    priority: Must
+    points: 2
+    sprint: 3
+    tier: core
+    role: shopper
+    goal: only products that real sources discuss
+    benefit: the app never recommends something it made up
+    criteria:
+      - A product with no mention in any source and no source link is dropped before scoring
+      - Dropped products are logged with the reason, for testing
+      - In recorded runs with planted invented product names, none reaches the results
+
+  # ---------------------------------------------------------------- EPIC 4
+  - id: US-17
+    title: Filter out products that break the rules
+    req: [FR-15, DR-01]
+    epic: 4
+    priority: Must
+    points: 3
+    sprint: 3
+    tier: core
+    role: shopper
+    goal: products that break my requirements removed before ranking
+    benefit: every product I see is one I could actually buy
+    criteria:
+      - "[DR-01] Products above the budget, breaking a hard rule, or matching an exclusion are removed in code, never by the LLM"
+      - Products fall into shown, filtered out with a reason (such as "₹94,990 is above your ₹80,000 budget"), and can't tell where a hard-rule value is unknown
+      - The "can't tell" group is visible, with a link to research it
+      - If nothing passes, the app names the one rule whose relaxation would help most
+      - No recommended product breaks a hard rule, checked by tests on every test brief
+
+  - id: US-18
+    title: Rank on the user's priorities with coverage
+    req: [FR-16, DR-09, DR-10]
+    epic: 4
+    priority: Must
+    points: 8
+    sprint: 3
+    tier: core
+    role: shopper
+    goal: products ranked on my priorities
+    benefit: the top result fits me and is not just the most popular
+    criteria:
+      - Score is the weighted sum of criterion scores using the user's weights
+      - "[DR-10] Mention counts show how strong the evidence is but never set the score by themselves"
+      - "[DR-09] An unknown criterion takes the average of similar products and is marked estimated"
+      - Each product shows a data-coverage percentage
+      - Labels show best match, runner-up, and the gap to the leader
+      - The results page shows ranked cards with score, coverage, main reasons and source links
+
+  - id: US-19
+    title: Honest confidence and ties from simulations
+    req: [FR-16]
+    epic: 4
+    priority: Should
+    points: 5
+    sprint: 4
+    tier: core
+    ml: true
+    role: shopper
+    goal: to know how sure the app is about the ranking
+    benefit: I can tell a clear winner from a coin flip
+    criteria:
+      - 1,000 simulations vary the weights and scores within their uncertainty
+      - Each product shows its chance of being first and a high, medium or low confidence label
+      - Statistically tied products are marked "too close to call", with the criterion that separates them
+      - Rank order stays stable under random 10% weight changes (Spearman 0.9 or better, target)
+      - The same inputs and seed always give the same output
+
+  - id: US-20
+    title: Explain why a product fits
+    req: [FR-17]
+    epic: 4
+    priority: Must
+    points: 5
+    sprint: 4
+    tier: core
+    role: shopper
+    goal: to see why a product fits me
+    benefit: I can check the reasoning against my own priorities
+    criteria:
+      - Each recommended product gets a short "why this fits you" paragraph with its top 3 criteria by contribution and one trade-off
+      - The contribution numbers come from code; the LLM only writes the words
+      - Anything that could not be verified is named
+      - The language is plain, at about school Grade 8
+      - If the LLM fails, a template sentence built from the same numbers is shown
+
+  - id: US-21
+    title: Click any claim to see its source
+    req: [FR-18]
+    epic: 4
+    priority: Must
+    points: 3
+    sprint: 3
+    tier: core
+    role: shopper
+    goal: to click any claim and see where it came from
+    benefit: I can check it myself
+    criteria:
+      - Every factual claim on the results page has a source link and its quote
+      - Clicking shows the source name, type, date and exact quote
+      - A Disputed claim shows all its sources, not only the winner
+      - The quote is stored at retrieval time, so it stays visible even if the page changes
+
+  - id: US-22
+    title: Check every explanation sentence against its evidence
+    req: [FR-21]
+    epic: 4
+    priority: Should
+    points: 5
+    sprint: 5
+    tier: core
+    ml: true
+    role: shopper
+    goal: unsupported statements removed from explanations
+    benefit: nothing I read is invented
+    criteria:
+      - An NLI model checks each explanation sentence against the evidence quotes it cites
+      - Unsupported sentences are removed or swapped for a plain template sentence
+      - On 100 test pairs with deliberately wrong claims, it catches 80% and wrongly rejects at most 15% of correct ones (target)
+      - The check adds no more than 5 seconds
+      - If the model fails, only sentences that quote their evidence directly are shown
+
+  - id: US-23
+    title: Compare products and re-rank instantly
+    req: [FR-19]
+    epic: 4
+    priority: Must
+    points: 8
+    sprint: 5
+    tier: core
+    role: shopper
+    goal: to compare products and change what matters
+    benefit: I can explore the trade-off instead of accepting one answer
+    criteria:
+      - Up to 4 products can be compared side by side on the criteria
+      - Moving a weight slider re-ranks in 1 second or less, in the browser, with no new server call
+      - Each product shows how far it moved up or down
+      - Changing the budget or a hard rule re-filters instantly from the data already loaded
+
+  - id: US-41
+    title: Look up missing facts for the top products
+    req: [FR-24]
+    epic: 4
+    priority: Must
+    points: 5
+    sprint: 5
+    tier: core
+    role: shopper
+    goal: the app to go and find missing facts about the top products
+    benefit: the recommendation rests on evidence and not on estimates
+    criteria:
+      - After a first ranking, the top 5 products' highest-weight criteria with no evidence trigger a targeted lookup
+      - At most 6 searches and 1 batched LLM call per search, cached for 7 days
+      - A value is kept only when the retrieved page actually supports it, and its source is cited
+      - Products are then re-scored, and only what is still missing is estimated
+      - If the lookup fails, the stage is skipped and values stay estimated
+      - Data coverage of the top 5 is measured before and after on 10 briefs
+
+  - id: US-37
+    title: Save or share results
+    req: [FR-19]
+    epic: 4
+    priority: Could
+    points: 3
+    sprint: 6
+    tier: plus
+    role: shopper
+    goal: to save or share my results
+    benefit: I can show them to someone else
+    criteria:
+      - The results page exports to PDF and CSV
+      - A read-only share link opens the same results without needing an account
+
+  # ---------------------------------------------------------------- EPIC 5
+  - id: US-24
+    title: Current price and buy link for the exact model
+    req: [FR-20, DR-01, DR-04]
+    epic: 5
+    priority: Must
+    points: 5
+    sprint: 5
+    tier: core
+    role: shopper
+    goal: the current price and where to buy the exact model
+    benefit: I do not click through and find a different product or price
+    criteria:
+      - It finds price, store, availability and link for the top products using Serper shopping results, with retailer lookups run in parallel
+      - A link is accepted only if its title matches the model name, and the variant where the data allows
+      - "[DR-04] Every price shows an as-of time, and prices older than 24 hours are labelled \"may have changed\""
+      - "[DR-01] Offers above the budget are flagged"
+      - If no price is found, the card says so and links to a store search
+      - Links open the store's own page; the app does not check out for the user
+
+  # ---------------------------------------------------------------- EPIC 6
+  - id: US-25
+    title: Repository, CI and secret scanning
+    req: [NFR-08]
+    epic: 6
+    priority: Must
+    points: 3
+    sprint: 1
+    tier: core
+    role: developer
+    goal: a clean repository with automatic checks
+    benefit: the team can work safely in parallel and no key leaks
+    criteria:
+      - One GitHub repo with all 10 members, a protected main, and one review required per merge
+      - CI runs ruff, mypy, ESLint and the tests on every pull request
+      - Secret scanning is on, .env is ignored, and keys live only in GitHub Secrets
+      - The database schema lives in versioned migration files from the first table onward
+      - Slack channels and the Projects board are created, and the folder layout from the plan exists
+
+  - id: US-26
+    title: One LLM wrapper with fallback and context fitting
+    req: [NFR-04, NFR-05]
+    epic: 6
+    priority: Must
+    points: 5
+    sprint: 1
+    tier: core
+    role: developer
+    goal: one LLM wrapper with fallback and output checks
+    benefit: one provider failing does not stop the app
+    criteria:
+      - Every LLM call uses one function that takes a task, a prompt and an expected schema
+      - Before each call it counts the input tokens and checks them against the chosen model's context window, leaving room for the answer plus a 10% margin
+      - Input that does not fit is trimmed (lowest-ranked comments first) or split into chunks whose results are merged; nothing is ever sent over the limit
+      - Each model's context window and output limit live in one config file, checked by the API smoke test
+      - When a call falls back to a model with a smaller window, the input is re-fitted to that model's limit first
+      - On rate limits, timeouts or server errors it moves through Groq, Gemini, OpenRouter and Cerebras
+      - Output is validated against the schema; invalid output is retried once, then goes to the next provider, then to a safe default
+      - Each call logs its provider, tokens, time and outcome
+      - Tasks tagged personal are never sent to the Gemini free tier, and a test proves it
+      - A test sends an oversized input and checks it is trimmed or split, never rejected by the provider
+      - A smoke test of every API records its real limits
+
+  - id: US-27
+    title: Fetch sources in parallel
+    req: [NFR-02]
+    epic: 6
+    priority: Must
+    points: 2
+    sprint: 2
+    tier: core
+    role: ML engineer
+    goal: independent fetches to run in parallel
+    benefit: research time is set by the slowest source and not the sum
+    criteria:
+      - Source fetches run in a thread pool with a fixed size
+      - Total fetch time is close to the slowest source
+      - Each API's rate limit is respected
+
+  - id: US-28
+    title: Treat retrieved content as untrusted
+    req: [NFR-09]
+    epic: 6
+    priority: Must
+    points: 3
+    sprint: 2
+    tier: core
+    role: security representative
+    goal: retrieved content treated as untrusted
+    benefit: a hostile web page cannot steer the recommendation
+    criteria:
+      - Web, Reddit and video text is passed to the LLM as labelled data, with an instruction to ignore any commands inside it
+      - Extraction output is accepted only as schema JSON
+      - HTML is stripped and text length is capped
+      - 10 test pages with hidden instructions such as "rank product X first" do not change any result
+
+  - id: US-29
+    title: Trace every claim to its evidence
+    req: [NFR-14]
+    epic: 6
+    priority: Must
+    points: 3
+    sprint: 6
+    tier: core
+    role: shopper
+    goal: every claim and decision traceable to its evidence
+    benefit: nothing in the results is unexplained
+    criteria:
+      - Every claim and ranking decision is stored with its source ID, quote and time
+      - A saved result reopens with the same evidence
+      - An automated test picks random claims from recorded results and finds each one's source in the database
+
+  - id: US-30
+    title: Login and private preferences
+    req: [NFR-06, NFR-07]
+    epic: 6
+    priority: Must
+    points: 5
+    sprint: 4
+    tier: core
+    role: shopper
+    goal: my saved preferences protected
+    benefit: nobody else can see what I am shopping for
+    criteria:
+      - Login uses Supabase Auth with Google sign-in
+      - Preferences and past searches are visible only to their owner, enforced by database row-level security
+      - "Test: user A cannot read user B's data through the API"
+      - Guests can search without signing in, but nothing of theirs is saved
+
+  - id: US-31
+    title: Handle outside failures gracefully
+    req: [NFR-03]
+    epic: 6
+    priority: Must
+    points: 5
+    sprint: 4
+    tier: core
+    role: system administrator
+    goal: outside failures handled gracefully
+    benefit: one outage does not take the app down
+    criteria:
+      - Every external call has a timeout from the stage contract table and one retry
+      - If one source type fails, results still arrive with a lower-coverage note
+      - If every LLM provider fails, the user sees a clear message and a retry button, not a crash
+      - A site that keeps failing is skipped for 24 hours, then tried again; a rate limit counts less than a block
+      - Tests inject failures for each provider and source
+
+  - id: US-32
+    title: Core logic testable offline
+    req: [NFR-15]
+    epic: 6
+    priority: Must
+    points: 3
+    sprint: 2
+    tier: core
+    role: developer
+    goal: the core logic testable without the internet
+    benefit: tests are fast and never use up API quota
+    criteria:
+      - Filtering, scoring, ranking, weight mapping and mention counting run in tests with no network
+      - Tests use recorded API responses
+      - Coverage is at least 70% on core modules and 80% on decide/, and the fast suite runs in under 60 seconds
+      - CI blocks a merge if tests fail
+
+  - id: US-33
+    title: Plain language and accessible controls
+    req: [NFR-10, NFR-11]
+    epic: 6
+    priority: Must
+    points: 5
+    sprint: 6
+    tier: core
+    role: shopper using assistive technology or with no technical background
+    goal: plain language and accessible controls
+    benefit: I can use the app on my own
+    criteria:
+      - Questions, explanations and results are at about Grade 8 reading level, and 4 of 5 non-technical testers understand a result without help
+      - The interview, sliders and compare view work with the keyboard alone
+      - Colour contrast passes WCAG AA, and every slider has a number box
+      - An automated accessibility check scores 90 or more
+
+  - id: US-34
+    title: Fast responses and exact-match cache
+    req: [NFR-01, FR-28]
+    epic: 6
+    priority: Should
+    points: 5
+    sprint: 6
+    tier: core
+    role: shopper
+    goal: quick responses
+    benefit: I do not give up halfway through
+    criteria:
+      - 90% of interview turns finish within 5 seconds
+      - A full search finishes within 120 seconds and shows live progress; none runs past 150 seconds
+      - Repeating a search within 24 hours returns from cache in 3 seconds or less
+      - A cached result is reused only when the request, category and priorities match (and, for signed-in users, their stored preferences); a result scored for different priorities is never reused
+      - Measured on 20 test briefs, with the slowest stage named
+
+  - id: US-35
+    title: Modules with clear interfaces
+    req: [NFR-12, NFR-13]
+    epic: 6
+    priority: Should
+    points: 3
+    sprint: 6
+    tier: core
+    role: developer
+    goal: modules with clear interfaces
+    benefit: categories, sources and providers can change without touching the core
+    criteria:
+      - A brand-new category works end to end with no code change
+      - An LLM or search provider can be swapped by configuration only
+      - Each module has a documented input and output, and one integration test per module boundary
+
+  - id: US-46
+    title: Circuit breaker and provider rotation
+    req: [NFR-04]
+    epic: 6
+    priority: Must
+    points: 4
+    sprint: 2
+    tier: core
+    role: developer
+    goal: failing providers switched off automatically and free limits used efficiently
+    benefit: the app stays fast and inside quota
+    criteria:
+      - A circuit breaker trips a provider after repeated failures in a short window; rate limits and server errors cool it down for 60 to 120 seconds, and a bad key marks it dead for the run
+      - Bulk extraction rotates across providers in a round-robin pool
+      - Each provider has a daily token counter, and calls stop before the budget is exceeded
+      - Tests simulate a failing, a slow and a rate-limited provider
+
+  - id: US-48
+    title: Golden tests for broken LLM output
+    req: [NFR-05]
+    epic: 6
+    priority: Must
+    points: 3
+    sprint: 2
+    tier: core
+    role: developer
+    goal: every parser proven safe against broken LLM output
+    benefit: a provider changing its format fails the build instead of corrupting a ranking
+    criteria:
+      - About 20 malformed outputs per parser - intent, criteria, interview reply, rubric, extraction, enrichment and explanation
+      - Cases cover fenced JSON, missing keys, wrong types, out-of-range values, trailing commas, cut-off text, plain prose, extra invented fields and embedded instructions
+      - Every case produces the canonical shape or a clean fallback, and none crashes
+      - New parsers must add their cases before merging
+
+  - id: US-49
+    title: Recorded-run replay and the CI quality gate
+    req: [NFR-17]
+    epic: 6
+    priority: Must
+    points: 5
+    sprint: 4
+    tier: core
+    role: developer
+    goal: real pipeline output tested and a quality gate on every change
+    benefit: a model update or a code change can never quietly make results worse
+    criteria:
+      - A capped recorder captures 5 real runs (sources, LLM outputs, final results), at most twice a sprint
+      - CI replays them offline on every pull request - at least 90% of expected products survive extraction, every claim has a quote, and no product lacks a source
+      - thresholds.yaml holds a floor for every metric; CI fails if a metric drops below its floor or falls more than 10 points from main
+      - A validator recomputes each test scenario's expected winner with the scoring code and fails if a hand label disagrees
+      - The fast gate finishes in under 3 minutes; the full evaluation runs nightly
+
+  - id: US-50
+    title: Worst-case test suite
+    req: [NFR-03]
+    epic: 6
+    priority: Must
+    points: 5
+    sprint: 6
+    tier: core
+    role: system administrator
+    goal: every failure the app might meet tested
+    benefit: it works in the worst case and not just the demo case
+    criteria:
+      - One automated fault test per row of the worst-case table in the plan
+      - A Playwright browser test runs request, interview and results on every merge to main
+      - A written drill script lets anyone break a key, a source or the database live and check the result
+      - All fault tests pass before the code freeze
+
+  - id: US-51
+    title: Measure consistency, personalisation and popularity bias
+    req: [NFR-17, DR-10]
+    epic: 6
+    priority: Should
+    points: 5
+    sprint: 6
+    tier: core
+    role: developer
+    goal: the recommendations themselves measured
+    benefit: we can show they are consistent, personal and not just popular
+    criteria:
+      - Paraphrase consistency - in 10 pairs of reworded queries, the top pick matches in at least 8
+      - Personalization strength - 5 personas on the same brief produce at least 3 different top picks
+      - Popularity bias - in scenarios where the most-mentioned product fits worst, it never ranks first
+      - Every metric is written to one generated results report used in the final submission
+
+  - id: US-52
+    title: Walking skeleton, pipeline runner and CLI
+    req: [NFR-12]
+    epic: 6
+    priority: Must
+    points: 5
+    sprint: 1
+    tier: core
+    role: developer
+    goal: the whole pipeline running end to end from the first sprint
+    benefit: every later feature improves a working app instead of completing a broken one
+    criteria:
+      - Every stage has its contract model and a simple stub implementation
+      - The pipeline runner calls the stages in order, applies each stage's time limit and fallback, and stops at 150 seconds with the best result so far
+      - '`python -m app.cli "best laptop for coding under 70k"` prints a ranked list with sources'
+      - The same pipeline feeds a plain results page in the browser
+      - The pipeline finishes without the database and saves at the end
+      - Each stage has a contract test, and replacing any stage with one that fails triggers its fallback
+
+  - id: US-47
+    title: Per-user rate limits
+    req: [NFR-16]
+    epic: 6
+    priority: Should
+    points: 2
+    sprint: 6
+    tier: plus
+    role: system administrator
+    goal: limits on how often each person can search
+    benefit: one user can't use up the whole free quota
+    criteria:
+      - 10 searches a minute per signed-in user or per network address for guests, and 200 requests a minute overall
+      - Over the limit, the user sees when they can try again
+
+  - id: US-53
+    title: Progress survives a dropped connection
+    req: [NFR-03]
+    epic: 6
+    priority: Could
+    points: 2
+    sprint: 6
+    tier: plus
+    role: shopper
+    goal: the live progress to survive a dropped connection
+    benefit: I don't lose a two-minute search
+    criteria:
+      - The progress stream reconnects automatically with increasing waits
+      - Progress resumes from the last finished stage
+      - With no update for 60 seconds, the page says so and offers to reload the result
+
+  - id: US-54
+    title: Team diagnostics page
+    req: [NFR-03]
+    epic: 6
+    priority: Could
+    points: 3
+    sprint: 6
+    tier: plus
+    role: developer
+    goal: one page showing how the system is behaving
+    benefit: we can find problems fast during testing and the demo
+    criteria:
+      - A team-only page shows provider status, recent LLM calls, stage times, fallbacks used and coverage per search
+      - It is behind the team's login and hidden from other users

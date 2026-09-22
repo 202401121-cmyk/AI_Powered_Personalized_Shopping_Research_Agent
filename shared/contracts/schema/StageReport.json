@@ -1,0 +1,77 @@
+{
+  "$defs": {
+    "StageName": {
+      "enum": [
+        "intake",
+        "criteria",
+        "interview",
+        "research",
+        "extract",
+        "match",
+        "verify",
+        "enrich",
+        "decide",
+        "explain",
+        "commerce"
+      ],
+      "title": "StageName",
+      "type": "string"
+    },
+    "StageStatus": {
+      "enum": [
+        "ok",
+        "fallback",
+        "skipped",
+        "timeout",
+        "failed"
+      ],
+      "title": "StageStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "What happened in one stage. Drives the coverage note and the diagnostics page.",
+  "properties": {
+    "stage": {
+      "$ref": "#/$defs/StageName"
+    },
+    "status": {
+      "$ref": "#/$defs/StageStatus"
+    },
+    "duration_ms": {
+      "minimum": 0,
+      "title": "Duration Ms",
+      "type": "integer"
+    },
+    "fallback_reason": {
+      "anyOf": [
+        {
+          "maxLength": 300,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Fallback Reason"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 20,
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "stage",
+    "status",
+    "duration_ms",
+    "fallback_reason",
+    "notes"
+  ],
+  "title": "StageReport",
+  "type": "object"
+}

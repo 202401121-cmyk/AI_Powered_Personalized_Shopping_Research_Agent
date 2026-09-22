@@ -1,0 +1,57 @@
+{
+  "queries": [
+    "best laptop for coding under 70000 India",
+    "coding laptop 16GB RAM lightweight reddit"
+  ],
+  "sources": [
+    {
+      "id": "src_edb2d0c42af72797",
+      "url": "https://www.reddit.com/r/developersIndia/comments/abc123/",
+      "type": "reddit",
+      "tier": 4,
+      "title": "Best coding laptop under 70k?",
+      "text": "Thread: best coding laptop under 70k? Nova Book 14 has been great for Android Studio. Kestrel Slim 15 battery is fine but I get about 6 hours, not 10.",
+      "text_hash": "dde7b831db787a0aec35546476d13a0eef52d1a6524cf45026104322f6ca7580",
+      "fetched_at": "2026-10-03T10:00:00Z",
+      "published_at": null,
+      "community": "r/developersIndia",
+      "quality": 0.8,
+      "via": "api"
+    },
+    {
+      "id": "src_37c43827cfe41e89",
+      "url": "https://example-reviews.in/kestrel-slim-15-review",
+      "type": "review_site",
+      "tier": 3,
+      "title": "Kestrel Slim 15 review",
+      "text": "Kestrel Slim 15 review: rated for 10 hours of battery. The Nova Book 14 keyboard is excellent. Orion Play 15 is fast but heavy at 2.3 kg.",
+      "text_hash": "f122dd182be29b2e38b500989254022896200ccb05aeb126de1d06c7e0a351c9",
+      "fetched_at": "2026-10-03T10:00:00Z",
+      "published_at": null,
+      "community": null,
+      "quality": 0.8,
+      "via": "direct"
+    },
+    {
+      "id": "src_2958fd9d1b3643cf",
+      "url": "https://kestrel.example.com/slim-15/specs",
+      "type": "manufacturer",
+      "tier": 1,
+      "title": "Kestrel Slim 15 specifications",
+      "text": "Kestrel Slim 15 specifications: battery rated up to 10 hours, 16 GB RAM, 1.6 kg.",
+      "text_hash": "a09233517a06ff201480d8f80569701bc3ffdc65cd810d05290f459fa2bacc56",
+      "fetched_at": "2026-10-03T10:00:00Z",
+      "published_at": null,
+      "community": null,
+      "quality": 0.8,
+      "via": "direct"
+    }
+  ],
+  "failures": [
+    {
+      "source_type": "youtube",
+      "reason": "timeout",
+      "detail": "no reply in 40 s"
+    }
+  ]
+}

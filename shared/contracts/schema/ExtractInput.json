@@ -1,0 +1,165 @@
+{
+  "$defs": {
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^src_[a-f0-9]{8,64}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "url": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/SourceType"
+        },
+        "tier": {
+          "$ref": "#/$defs/SourceTier"
+        },
+        "title": {
+          "maxLength": 300,
+          "title": "Title",
+          "type": "string"
+        },
+        "text": {
+          "description": "Cleaned, HTML stripped, capped",
+          "maxLength": 12000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "text_hash": {
+          "description": "sha256 of text, used for caching",
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Text Hash",
+          "type": "string"
+        },
+        "fetched_at": {
+          "format": "date-time",
+          "title": "Fetched At",
+          "type": "string"
+        },
+        "published_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Published At"
+        },
+        "community": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "e.g. 'r/SuggestALaptop'",
+          "title": "Community"
+        },
+        "quality": {
+          "default": 0.5,
+          "description": "US-13 thread or page quality score",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Quality",
+          "type": "number"
+        },
+        "via": {
+          "enum": [
+            "api",
+            "direct",
+            "jina",
+            "search_snippet"
+          ],
+          "title": "Via",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "url",
+        "type",
+        "tier",
+        "title",
+        "text",
+        "text_hash",
+        "fetched_at",
+        "published_at",
+        "community",
+        "quality",
+        "via"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "SourceTier": {
+      "description": "DR-03: lower number = more authoritative for factual specs.",
+      "enum": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "title": "SourceTier",
+      "type": "integer"
+    },
+    "SourceType": {
+      "enum": [
+        "reddit",
+        "youtube",
+        "web_search",
+        "review_site",
+        "manufacturer",
+        "lab",
+        "retailer"
+      ],
+      "title": "SourceType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "source": {
+      "$ref": "#/$defs/Source"
+    },
+    "criterion_keys": {
+      "items": {
+        "maxLength": 64,
+        "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+        "type": "string"
+      },
+      "maxItems": 10,
+      "minItems": 1,
+      "title": "Criterion Keys",
+      "type": "array"
+    },
+    "category_label": {
+      "maxLength": 60,
+      "title": "Category Label",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source",
+    "criterion_keys",
+    "category_label"
+  ],
+  "title": "ExtractInput",
+  "type": "object"
+}

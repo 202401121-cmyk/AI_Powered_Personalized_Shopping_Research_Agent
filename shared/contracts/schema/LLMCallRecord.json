@@ -1,0 +1,112 @@
+{
+  "$defs": {
+    "LLMTask": {
+      "description": "Every kind of call. Routing, token budgets and logging are keyed on this.",
+      "enum": [
+        "detect_intent",
+        "generate_criteria",
+        "classify_reply",
+        "answer_user_question",
+        "write_question",
+        "extract_claims",
+        "discover_aliases",
+        "enrich_extract",
+        "write_explanation"
+      ],
+      "title": "LLMTask",
+      "type": "string"
+    },
+    "Provider": {
+      "enum": [
+        "groq",
+        "gemini",
+        "openrouter",
+        "cerebras"
+      ],
+      "title": "Provider",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "One row of the llm_calls table. Written for every call, success or not.",
+  "properties": {
+    "search_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Search Id"
+    },
+    "task": {
+      "$ref": "#/$defs/LLMTask"
+    },
+    "provider": {
+      "$ref": "#/$defs/Provider"
+    },
+    "model": {
+      "title": "Model",
+      "type": "string"
+    },
+    "input_tokens": {
+      "minimum": 0,
+      "title": "Input Tokens",
+      "type": "integer"
+    },
+    "output_tokens": {
+      "minimum": 0,
+      "title": "Output Tokens",
+      "type": "integer"
+    },
+    "duration_ms": {
+      "minimum": 0,
+      "title": "Duration Ms",
+      "type": "integer"
+    },
+    "outcome": {
+      "enum": [
+        "ok",
+        "invalid_output",
+        "rate_limited",
+        "timeout",
+        "error",
+        "skipped_budget"
+      ],
+      "title": "Outcome",
+      "type": "string"
+    },
+    "fitted": {
+      "default": "as_is",
+      "enum": [
+        "as_is",
+        "trimmed",
+        "chunked"
+      ],
+      "title": "Fitted",
+      "type": "string"
+    },
+    "at": {
+      "format": "date-time",
+      "title": "At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "search_id",
+    "task",
+    "provider",
+    "model",
+    "input_tokens",
+    "output_tokens",
+    "duration_ms",
+    "outcome",
+    "fitted",
+    "at"
+  ],
+  "title": "LLMCallRecord",
+  "type": "object"
+}

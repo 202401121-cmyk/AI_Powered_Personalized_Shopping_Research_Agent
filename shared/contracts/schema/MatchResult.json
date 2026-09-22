@@ -1,0 +1,162 @@
+{
+  "$defs": {
+    "Product": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "description": "Canonical display name",
+          "maxLength": 150,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "brand": {
+          "anyOf": [
+            {
+              "maxLength": 60,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Brand"
+        },
+        "kind": {
+          "default": "product",
+          "description": "product_type for commodities like 'ring-shank nails'",
+          "enum": [
+            "product",
+            "product_type"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "aliases": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 50,
+          "title": "Aliases",
+          "type": "array"
+        },
+        "variants": {
+          "items": {
+            "$ref": "#/$defs/Variant"
+          },
+          "maxItems": 20,
+          "title": "Variants",
+          "type": "array"
+        },
+        "recommender_count": {
+          "default": 0,
+          "description": "Distinct authors who recommended it",
+          "minimum": 0,
+          "title": "Recommender Count",
+          "type": "integer"
+        },
+        "weighted_mentions": {
+          "default": 0.0,
+          "description": "Mentions after the 180-day half-life",
+          "minimum": 0,
+          "title": "Weighted Mentions",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "brand",
+        "kind",
+        "aliases",
+        "variants",
+        "recommender_count",
+        "weighted_mentions"
+      ],
+      "title": "Product",
+      "type": "object"
+    },
+    "Variant": {
+      "additionalProperties": false,
+      "description": "DR-02: versions that differ in price or specs are separate variants of one product.",
+      "properties": {
+        "id": {
+          "pattern": "^var_[A-Za-z0-9_-]{3,64}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "description": "e.g. '16 GB RAM / 512 GB SSD / India'",
+          "maxLength": 120,
+          "title": "Label",
+          "type": "string"
+        },
+        "attributes": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "e.g. {'ram': '16GB', 'region': 'IN'}",
+          "title": "Attributes",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "attributes"
+      ],
+      "title": "Variant",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "products": {
+      "items": {
+        "$ref": "#/$defs/Product"
+      },
+      "maxItems": 200,
+      "title": "Products",
+      "type": "array"
+    },
+    "alias_map": {
+      "additionalProperties": {
+        "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+        "type": "string"
+      },
+      "description": "Every raw name -> its canonical product",
+      "title": "Alias Map",
+      "type": "object"
+    },
+    "unmatched": {
+      "description": "Names kept apart because matching was unsure",
+      "items": {
+        "type": "string"
+      },
+      "title": "Unmatched",
+      "type": "array"
+    },
+    "method": {
+      "enum": [
+        "model",
+        "fuzzy"
+      ],
+      "title": "Method",
+      "type": "string"
+    }
+  },
+  "required": [
+    "products",
+    "alias_map",
+    "unmatched",
+    "method"
+  ],
+  "title": "MatchResult",
+  "type": "object"
+}

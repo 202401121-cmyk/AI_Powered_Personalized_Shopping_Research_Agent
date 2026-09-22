@@ -1,0 +1,322 @@
+{
+  "values": [
+    {
+      "product_id": "prd_nova_book_14",
+      "criterion_key": "cpu_performance",
+      "state": "known",
+      "score": 7.5,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_053f4bf83174cf53"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_nova_book_14",
+      "criterion_key": "battery_life",
+      "state": "known",
+      "score": 8.0,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_bf7c2488fe2eda5f"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_nova_book_14",
+      "criterion_key": "keyboard_comfort",
+      "state": "known",
+      "score": 9.0,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_5807c6297c20c05e"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_nova_book_14",
+      "criterion_key": "display_quality",
+      "state": "known",
+      "score": 7.0,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_568a82e200569f1d"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_nova_book_14",
+      "criterion_key": "weight",
+      "state": "known",
+      "score": 7.5,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_ae3839c409ab71bf"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_nova_book_14",
+      "criterion_key": "build_durability",
+      "state": "known",
+      "score": 7.0,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_3ac2323f12a5c8d6"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_nova_book_14",
+      "criterion_key": "value_for_money",
+      "state": "known",
+      "score": 8.0,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_d37a81d013da4914"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_nova_book_14",
+      "criterion_key": "ram_gb",
+      "state": "known",
+      "score": null,
+      "value": 16.0,
+      "confidence": 0.9,
+      "supporting_claim_ids": [
+        "clm_3bed19288173fb0e"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_kestrel_slim_15",
+      "criterion_key": "cpu_performance",
+      "state": "known",
+      "score": 8.0,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_dc147cd38e1e6839"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_kestrel_slim_15",
+      "criterion_key": "battery_life",
+      "state": "disputed",
+      "score": 7.0,
+      "value": null,
+      "confidence": 0.5,
+      "supporting_claim_ids": [
+        "clm_2c31271c5c981d18"
+      ],
+      "conflicting_claim_ids": [
+        "clm_46feb890769b8225"
+      ]
+    },
+    {
+      "product_id": "prd_kestrel_slim_15",
+      "criterion_key": "keyboard_comfort",
+      "state": "known",
+      "score": 7.5,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_c6d748e9c7945937"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_kestrel_slim_15",
+      "criterion_key": "display_quality",
+      "state": "known",
+      "score": 7.5,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_e32836d2e2257930"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_kestrel_slim_15",
+      "criterion_key": "weight",
+      "state": "known",
+      "score": 8.0,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_8fe73a640ab049ef"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_kestrel_slim_15",
+      "criterion_key": "build_durability",
+      "state": "known",
+      "score": 7.5,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_9e9b1d688e0274e6"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_kestrel_slim_15",
+      "criterion_key": "value_for_money",
+      "state": "known",
+      "score": 7.5,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_92a4c00d3f53f206"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_kestrel_slim_15",
+      "criterion_key": "ram_gb",
+      "state": "known",
+      "score": null,
+      "value": 16.0,
+      "confidence": 0.9,
+      "supporting_claim_ids": [
+        "clm_762fc11b7a21cdde"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_orion_play_15",
+      "criterion_key": "cpu_performance",
+      "state": "known",
+      "score": 9.0,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_e13d8f66bd7c5e47"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_orion_play_15",
+      "criterion_key": "battery_life",
+      "state": "known",
+      "score": 5.0,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_8f6737d75a7a0501"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_orion_play_15",
+      "criterion_key": "keyboard_comfort",
+      "state": "known",
+      "score": 6.5,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_1cf7047e908108a3"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_orion_play_15",
+      "criterion_key": "display_quality",
+      "state": "known",
+      "score": 8.0,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_21fa900998d83915"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_orion_play_15",
+      "criterion_key": "weight",
+      "state": "known",
+      "score": 4.0,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_e1c5552273f9da7e"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_orion_play_15",
+      "criterion_key": "build_durability",
+      "state": "estimated",
+      "score": 7.25,
+      "value": null,
+      "confidence": 0.3,
+      "supporting_claim_ids": [],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_orion_play_15",
+      "criterion_key": "value_for_money",
+      "state": "known",
+      "score": 7.0,
+      "value": null,
+      "confidence": 0.8,
+      "supporting_claim_ids": [
+        "clm_5139615e2d353cc9"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_orion_play_15",
+      "criterion_key": "ram_gb",
+      "state": "known",
+      "score": null,
+      "value": 16.0,
+      "confidence": 0.9,
+      "supporting_claim_ids": [
+        "clm_2f93718e8d47a941"
+      ],
+      "conflicting_claim_ids": []
+    },
+    {
+      "product_id": "prd_vela_pro_14",
+      "criterion_key": "ram_gb",
+      "state": "unknown",
+      "score": null,
+      "value": null,
+      "confidence": 0.0,
+      "supporting_claim_ids": [],
+      "conflicting_claim_ids": []
+    }
+  ],
+  "community": [
+    {
+      "product_id": "prd_nova_book_14",
+      "label": "consistent",
+      "communities": [
+        "r/developersIndia"
+      ],
+      "note": null
+    },
+    {
+      "product_id": "prd_orion_play_15",
+      "label": "single_source",
+      "communities": [
+        "r/developersIndia"
+      ],
+      "note": "Only one community discussed it, so confidence is one step lower."
+    }
+  ],
+  "dropped_unsourced": [],
+  "trust_method": "learned"
+}

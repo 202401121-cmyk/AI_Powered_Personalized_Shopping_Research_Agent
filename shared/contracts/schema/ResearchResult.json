@@ -1,0 +1,203 @@
+{
+  "$defs": {
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^src_[a-f0-9]{8,64}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "url": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/SourceType"
+        },
+        "tier": {
+          "$ref": "#/$defs/SourceTier"
+        },
+        "title": {
+          "maxLength": 300,
+          "title": "Title",
+          "type": "string"
+        },
+        "text": {
+          "description": "Cleaned, HTML stripped, capped",
+          "maxLength": 12000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "text_hash": {
+          "description": "sha256 of text, used for caching",
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Text Hash",
+          "type": "string"
+        },
+        "fetched_at": {
+          "format": "date-time",
+          "title": "Fetched At",
+          "type": "string"
+        },
+        "published_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Published At"
+        },
+        "community": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "e.g. 'r/SuggestALaptop'",
+          "title": "Community"
+        },
+        "quality": {
+          "default": 0.5,
+          "description": "US-13 thread or page quality score",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Quality",
+          "type": "number"
+        },
+        "via": {
+          "enum": [
+            "api",
+            "direct",
+            "jina",
+            "search_snippet"
+          ],
+          "title": "Via",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "url",
+        "type",
+        "tier",
+        "title",
+        "text",
+        "text_hash",
+        "fetched_at",
+        "published_at",
+        "community",
+        "quality",
+        "via"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "SourceFailure": {
+      "additionalProperties": false,
+      "properties": {
+        "source_type": {
+          "$ref": "#/$defs/SourceType"
+        },
+        "reason": {
+          "enum": [
+            "timeout",
+            "rate_limited",
+            "blocked",
+            "not_found",
+            "quota_exhausted",
+            "error"
+          ],
+          "title": "Reason",
+          "type": "string"
+        },
+        "detail": {
+          "default": "",
+          "maxLength": 300,
+          "title": "Detail",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_type",
+        "reason",
+        "detail"
+      ],
+      "title": "SourceFailure",
+      "type": "object"
+    },
+    "SourceTier": {
+      "description": "DR-03: lower number = more authoritative for factual specs.",
+      "enum": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "title": "SourceTier",
+      "type": "integer"
+    },
+    "SourceType": {
+      "enum": [
+        "reddit",
+        "youtube",
+        "web_search",
+        "review_site",
+        "manufacturer",
+        "lab",
+        "retailer"
+      ],
+      "title": "SourceType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "queries": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 12,
+      "minItems": 1,
+      "title": "Queries",
+      "type": "array"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/Source"
+      },
+      "maxItems": 60,
+      "title": "Sources",
+      "type": "array"
+    },
+    "failures": {
+      "items": {
+        "$ref": "#/$defs/SourceFailure"
+      },
+      "title": "Failures",
+      "type": "array"
+    }
+  },
+  "required": [
+    "queries",
+    "sources",
+    "failures"
+  ],
+  "title": "ResearchResult",
+  "type": "object"
+}
