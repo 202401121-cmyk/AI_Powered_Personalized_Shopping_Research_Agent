@@ -29,9 +29,15 @@ def _dump(obj: object) -> object:
     raise TypeError(f"cannot export {type(obj)!r}")
 
 
-def main() -> int:
-    (OUT / "schema").mkdir(parents=True, exist_ok=True)
-    (OUT / "examples").mkdir(parents=True, exist_ok=True)
+def _write(path: Path, text: str) -> None:
+    # Always UTF-8 with LF, whatever the OS default: the examples contain the rupee sign, and the
+    # committed files must come out byte-identical on Windows and Linux.
+    path.write_text(text, encoding="utf-8", newline="\n")
+
+
+def main(out: Path = OUT) -> int:
+    (out / "schema").mkdir(parents=True, exist_ok=True)
+    (out / "examples").mkdir(parents=True, exist_ok=True)
 
     models = sorted(
         (v for v in vars(C).values() if isinstance(v, type) and issubclass(v, C.Contract) and v is not C.Contract),
@@ -39,14 +45,14 @@ def main() -> int:
     )
     for model in models:
         schema = model.model_json_schema(mode="serialization")
-        (OUT / "schema" / f"{model.__name__}.json").write_text(json.dumps(schema, indent=2, ensure_ascii=False) + "\n")
+        _write(out / "schema" / f"{model.__name__}.json", json.dumps(schema, indent=2, ensure_ascii=False) + "\n")
 
     for name, build in examples.ALL_EXAMPLES.items():
         data = _dump(build())
-        (OUT / "examples" / f"{name}.json").write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+        _write(out / "examples" / f"{name}.json", json.dumps(data, indent=2, ensure_ascii=False) + "\n")
 
-    (OUT / "VERSION").write_text(C.SCHEMA_VERSION + "\n")
-    print(f"wrote {len(models)} schemas and {len(examples.ALL_EXAMPLES)} examples to {OUT}")
+    _write(out / "VERSION", C.SCHEMA_VERSION + "\n")
+    print(f"wrote {len(models)} schemas and {len(examples.ALL_EXAMPLES)} examples to {out}")
     return 0
 
 
