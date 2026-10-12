@@ -38,6 +38,21 @@ For each LLM provider: one tiny call returning JSON, then read the rate-limit re
 For each data source: one real request, saved to `backend/tests/fixtures/<source>/` as the first
 recorded response (remove anything personal first). These recordings are what the tests use.
 
+### Run the LLM smoke test
+
+With your LLM keys in `.env`, run from `backend/`:
+
+```bash
+python -m scripts.smoke_llm
+```
+
+It sends one tiny JSON request to each provider that has a key, through the same adapter the app uses, and
+prints a table: provider, model, works (yes/no/skipped), latency, tokens used, and the provider's rate-limit
+response headers. It never prints a key, calls real APIs (so it never runs in CI), and always exits 0.
+
+Then copy what you saw into the results table below and into `backend/config/models.yaml` (model name,
+context window, output limit), and remove the `# UNVERIFIED` comment above each row you confirmed.
+
 ## Results table (fill in, then post in `#dev`)
 
 | Service | Works? | Limits seen | Context window (LLMs) | Terms OK? | Notes |

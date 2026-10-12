@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=64"]  # 64+ builds editable installs (pip install -e)
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "shopsense-backend"
 version = "0.1.0"
@@ -21,6 +25,11 @@ dev = [
     "ruff>=0.6",
     "mypy>=1.11",
 ]
+
+# Only `app` is installed. Listing it explicitly means other folders in backend/ (config/, scripts/, tests/,
+# and any data folder a later story adds) never break `pip install -e .` with "Multiple top-level packages".
+[tool.setuptools.packages.find]
+include = ["app", "app.*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
