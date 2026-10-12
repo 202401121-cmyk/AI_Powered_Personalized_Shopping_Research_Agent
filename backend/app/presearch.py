@@ -6,6 +6,7 @@ Each still goes through `run_stage`, so it gets its time limit and falls back in
 
 from __future__ import annotations
 
+from functools import lru_cache
 from typing import TypeVar
 
 from app.contracts import (
@@ -16,21 +17,33 @@ from app.contracts import (
     Intent,
     InterviewStep,
     InterviewTurn,
+    LLMClient,
     Stage,
     StageContext,
 )
 from app.criteria import CriteriaStage
 from app.intake import IntakeStage
 from app.interview import InterviewStage
+from app.llm import build_llm_client
 from app.pipeline import run_stage
 
 In = TypeVar("In")
 Out = TypeVar("Out")
 
 
-def start_request(query: str) -> Intent:
-    """Understand the user's first message."""
-    return _run(IntakeStage(), IntakeInput(raw_query=query))
+@lru_cache(maxsize=1)
+def default_llm() -> LLMClient:
+    """The real LLM client, built once. With no API keys it has no providers, so intake uses its rules layer.
+
+    Tests replace this with a fake (tests/conftest.py), so no test can reach a real provider.
+    """
+    return build_llm_client()
+
+
+def start_request(query: str, previous_reply: str | None = None, unclear_attempts: int = 0) -> Intent:
+    """Understand the user's request, or their reply to our follow-up question (US-01, US-02)."""
+    inp = IntakeInput(raw_query=query, previous_clarification_reply=previous_reply, unclear_attempts=unclear_attempts)
+    return _run(IntakeStage(default_llm()), inp)
 
 
 def make_criteria(intent: Intent) -> CriteriaSet:

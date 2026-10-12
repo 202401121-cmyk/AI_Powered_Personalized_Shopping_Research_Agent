@@ -1,0 +1,188 @@
+# Product categories the intake stage can recognise without an LLM (US-02). Loaded by app/intake/lexicon.py.
+#
+# categories: slug (the id used everywhere), label (shown to the user), synonyms (lowercase words people type,
+#             including Indian English). Matching is whole-word and case-insensitive, prefers the longest
+#             synonym, and also accepts a plural ending ("laptops", "watches").
+# ambiguous:  words that need a question before research, with the categories offered as answers.
+#             An ambiguous word only applies when no category synonym matched ("smart watch" is not ambiguous).
+# suggestions: the categories offered when a request names no product at all ("something for my mom").
+#
+# A category that is not listed here is still allowed: the LLM path can name a new one and US-03 builds its
+# criteria. This list is what the keyword rules layer can find when every LLM provider is down.
+
+categories:
+  # --- computing and phones ---------------------------------------------------------------------------
+  - slug: laptop
+    label: Laptop
+    synonyms: [laptop, macbook, ultrabook, chromebook, gaming laptop, notebook pc]
+  - slug: smartphone
+    label: Smartphone
+    synonyms: [smartphone, smart phone, phone, mobile, mobile phone, cellphone, cell phone, iphone, android phone]
+  - slug: tablet
+    label: Tablet
+    synonyms: [tablet, ipad, android tablet]
+  - slug: monitor
+    label: Computer monitor
+    synonyms: [computer monitor, pc monitor, gaming monitor, desktop monitor, external monitor, display monitor]
+  - slug: keyboard
+    label: Keyboard
+    synonyms: [keyboard, mechanical keyboard, wireless keyboard]
+  - slug: mouse
+    label: Mouse
+    synonyms: [mouse, mice, gaming mouse, wireless mouse]
+  - slug: printer
+    label: Printer
+    synonyms: [printer, ink tank printer, laser printer, inkjet printer]
+  - slug: router
+    label: Wi-Fi router
+    synonyms: [router, wifi router, wi fi router, mesh router, mesh wifi]
+  - slug: webcam
+    label: Webcam
+    synonyms: [webcam, web camera, web cam]
+  - slug: power_bank
+    label: Power bank
+    synonyms: [power bank, powerbank]
+  - slug: gaming_console
+    label: Gaming console
+    synonyms: [gaming console, console, playstation, ps5, xbox, nintendo switch]
+
+  # --- audio and wearables ------------------------------------------------------------------------------
+  - slug: earbuds
+    label: Earbuds
+    synonyms: [earbuds, earbud, ear buds, tws, true wireless, earphones, earphone, in ear, airpods, buds]
+  - slug: headphones
+    label: Headphones
+    synonyms: [headphones, headphone, headset, over ear headphones, on ear headphones, anc headphones]
+  - slug: bluetooth_speaker
+    label: Bluetooth speaker
+    synonyms: [bluetooth speaker, portable speaker, wireless speaker, bt speaker, party speaker]
+  - slug: home_theatre
+    label: Home theatre
+    synonyms: [home theatre, home theater, soundbar, sound bar, home theatre system]
+  - slug: smart_speaker
+    label: Smart speaker
+    synonyms: [smart speaker, echo dot, alexa speaker, google nest, google home]
+  - slug: smartwatch
+    label: Smartwatch
+    synonyms: [smartwatch, smart watch, apple watch, galaxy watch, android watch]
+  - slug: fitness_band
+    label: Fitness band
+    synonyms: [fitness band, fitness tracker, smart band, activity tracker, smartband]
+  - slug: analog_watch
+    label: Analog watch
+    synonyms: [analog watch, analogue watch, quartz watch, automatic watch, mechanical watch, chronograph]
+
+  # --- screens and cameras ------------------------------------------------------------------------------
+  - slug: television
+    label: Television
+    synonyms: [tv, television, smart tv, led tv, oled tv, qled tv, android tv]
+  - slug: projector
+    label: Projector
+    synonyms: [projector, home projector, mini projector]
+  - slug: camera
+    label: Camera
+    synonyms: [camera, dslr, mirrorless camera, action camera, vlogging camera, digital camera]
+
+  # --- home appliances ------------------------------------------------------------------------------------
+  - slug: refrigerator
+    label: Refrigerator
+    synonyms: [refrigerator, fridge, double door fridge, single door fridge, side by side fridge]
+  - slug: washing_machine
+    label: Washing machine
+    synonyms: [washing machine, washer, front load washing machine, top load washing machine]
+  - slug: air_conditioner
+    label: Air conditioner
+    synonyms: [ac, air conditioner, split ac, window ac, inverter ac, aircon]
+  - slug: air_purifier
+    label: Air purifier
+    synonyms: [air purifier, air cleaner]
+  - slug: water_purifier
+    label: Water purifier
+    synonyms: [water purifier, ro purifier, ro water purifier, water filter, uv purifier]
+  - slug: geyser
+    label: Geyser (water heater)
+    synonyms: [geyser, water heater, instant geyser, storage geyser]
+  - slug: ceiling_fan
+    label: Ceiling fan
+    synonyms: [ceiling fan, fan, bldc fan]
+  - slug: vacuum_cleaner
+    label: Vacuum cleaner
+    synonyms: [vacuum cleaner, vacuum, robot vacuum, robotic vacuum, robot vacuum cleaner]
+  - slug: iron
+    label: Iron
+    synonyms: [steam iron, dry iron, clothes iron, iron box]
+  - slug: dishwasher
+    label: Dishwasher
+    synonyms: [dishwasher, dish washer]
+
+  # --- kitchen --------------------------------------------------------------------------------------------
+  - slug: mixer_grinder
+    label: Mixer grinder
+    synonyms: [mixer grinder, mixer, mixie, juicer mixer grinder, grinder]
+  - slug: microwave
+    label: Microwave oven
+    synonyms: [microwave, microwave oven, convection microwave]
+  - slug: induction_cooktop
+    label: Induction cooktop
+    synonyms: [induction cooktop, induction, induction stove, induction chulha]
+  - slug: electric_kettle
+    label: Electric kettle
+    synonyms: [electric kettle, kettle]
+  - slug: air_fryer
+    label: Air fryer
+    synonyms: [air fryer, airfryer]
+  - slug: kitchen_chimney
+    label: Kitchen chimney
+    synonyms: [kitchen chimney, chimney, auto clean chimney]
+
+  # --- personal care --------------------------------------------------------------------------------------
+  - slug: trimmer
+    label: Trimmer
+    synonyms: [trimmer, beard trimmer, electric shaver, shaver, body groomer]
+  - slug: hair_dryer
+    label: Hair dryer
+    synonyms: [hair dryer, hairdryer, blow dryer]
+  - slug: electric_toothbrush
+    label: Electric toothbrush
+    synonyms: [electric toothbrush, electric tooth brush]
+
+  # --- furniture and gear ---------------------------------------------------------------------------------
+  - slug: mattress
+    label: Mattress
+    synonyms: [mattress, bed mattress, memory foam mattress]
+  - slug: office_chair
+    label: Office chair
+    synonyms: [office chair, ergonomic chair, gaming chair, study chair, desk chair]
+  - slug: standing_desk
+    label: Standing desk
+    synonyms: [standing desk, sit stand desk, height adjustable desk, standing table]
+  - slug: running_shoes
+    label: Running shoes
+    synonyms: [running shoes, running shoe, jogging shoes, sports shoes]
+  - slug: backpack
+    label: Backpack
+    synonyms: [backpack, laptop bag, laptop backpack, school bag, rucksack]
+
+  # --- baby -----------------------------------------------------------------------------------------------
+  - slug: pram
+    label: Pram (stroller)
+    synonyms: [pram, stroller, baby stroller, pushchair, buggy]
+  - slug: car_seat
+    label: Baby car seat
+    synonyms: [car seat, baby car seat, infant car seat]
+  - slug: baby_monitor
+    label: Baby monitor
+    synonyms: [baby monitor, video baby monitor]
+
+ambiguous:
+  - word: watch
+    question: Which kind of watch do you mean?
+    options: [smartwatch, fitness_band, analog_watch]
+  - word: monitor
+    question: Which kind of monitor do you mean?
+    options: [monitor, baby_monitor]
+  - word: speaker
+    question: Which kind of speaker do you mean?
+    options: [bluetooth_speaker, home_theatre, smart_speaker]
+
+suggestions: [smartphone, laptop, mixer_grinder, smartwatch]

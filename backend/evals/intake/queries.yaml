@@ -1,0 +1,50 @@
+# Labelled requests for the intake stage (US-02). Each row is what a correct reading gives:
+#   category: the slug, or null when the app must ask first
+#   budget_min / budget_max: the amount, or null; currency defaults to INR
+#   needs_clarification: true when the app must ask before research (US-01)
+# Run: python -m evals.intake.run_rules_eval   (rules only; no LLM, no network)
+# If the rules get a row wrong, fix the rules, never the label (unless the label is truly wrong).
+
+- {query: "gaming laptop under 80k", category: laptop, budget_max: 80000}
+- {query: "phone below 15,000", category: smartphone, budget_max: 15000}
+- {query: "earbuds under ₹2k", category: earbuds, budget_max: 2000}
+- {query: "tv under 1.5 lakh", category: television, budget_max: 150000}
+- {query: "fridge between 20k and 30k", category: refrigerator, budget_min: 20000, budget_max: 30000}
+- {query: "laptop with 16gb ram i7", category: laptop}
+- {query: "laptop under $800", category: laptop, budget_max: 800, currency: USD}
+- {query: "watch", category: null, needs_clarification: true}
+- {query: "watch under 5k", category: null, budget_max: 5000, needs_clarification: true}
+- {query: "smart watch for running", category: smartwatch}
+- {query: "something for my mom", category: null, needs_clarification: true}
+- {query: "pram for a newborn", category: pram}
+- {query: "best AC for a 150 sq ft room", category: air_conditioner}
+- {query: "geyser 25 litre under 10k", category: geyser, budget_max: 10000}
+- {query: "mixer grinder 750W", category: mixer_grinder}
+# Hindi-English mixes
+- {query: "achha phone 20k tak", category: smartphone, budget_max: 20000}
+- {query: "laptop 50 hazaar tak", category: laptop, budget_max: 50000}
+- {query: "fridge 25k ke andar", category: refrigerator, budget_max: 25000}
+- {query: "sasta mobile chahiye 10k mein", category: smartphone, budget_max: 10000}
+- {query: "bacche ke liye pram", category: pram}
+# more categories, budgets and specs that must not become budgets
+- {query: "washing machine for a family of 4 under 25000", category: washing_machine, budget_max: 25000}
+- {query: "noise cancelling headphones above 10k", category: headphones, budget_min: 10000}
+- {query: "air purifier for delhi pollution", category: air_purifier}
+- {query: "bluetooth speaker for parties under 3000", category: bluetooth_speaker, budget_max: 3000}
+- {query: "office chair for back pain 8k-12k", category: office_chair, budget_min: 8000, budget_max: 12000}
+- {query: "robot vacuum cleaner for pet hair", category: vacuum_cleaner}
+- {query: "running shoes for flat feet under 5000", category: running_shoes, budget_max: 5000}
+- {query: "tablet for kids between 10k and 15k", category: tablet, budget_min: 10000, budget_max: 15000}
+- {query: "4k tv under 50k", category: television, budget_max: 50000}
+- {query: "inverter ac 1.5 ton under 40k", category: air_conditioner, budget_max: 40000}
+- {query: "power bank 20000 mAh", category: power_bank}
+- {query: "trimmer under rs 1500", category: trimmer, budget_max: 1500}
+- {query: "electric kettle under 1000", category: electric_kettle, budget_max: 1000}
+- {query: "camera for vlogging under 60k", category: camera, budget_max: 60000}
+- {query: "baby monitor with night vision", category: baby_monitor}
+- {query: "car seat for a 2 year old", category: car_seat}
+- {query: "microwave for a small family above 8000", category: microwave, budget_min: 8000}
+# requests that must ask first
+- {query: "monitor for coding", category: null, needs_clarification: true}
+- {query: "a gift for my dad", category: null, needs_clarification: true}
+- {query: "???", category: null, needs_clarification: true}

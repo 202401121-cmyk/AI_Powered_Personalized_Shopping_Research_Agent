@@ -1,20 +1,92 @@
-"""Intake stub (US-52). US-01/US-02 replace run() with real intent detection; this becomes the fallback."""
+"""Stage 1, intake (US-01, US-02): the user's request in, a validated Intent out.
+
+The LLM reads the request first; if every provider fails, the keyword rules layer answers instead, so a search
+never stops at intake. Either way code owns the budget, and a category is never guessed: an unclear request
+gets one question, and an unclear reply to that question gets example requests (US-01).
+"""
 
 from __future__ import annotations
 
-from app.contracts import IntakeInput, Intent, StageContext, StageName, examples
+import logging
+from collections.abc import Mapping
+
+from app.contracts import IntakeInput, Intent, LLMClient, LLMTask, LLMUnavailable, StageContext, StageName
+
+from .parsing import RawIntent, to_intent
+from .prompts import SYSTEM_PROMPT, user_message
+from .rules import detect_by_rules, no_category_intent
+
+log = logging.getLogger(__name__)
+
+# Shown when the reply to the follow-up question is still unclear (US-01). The frontend has its own copy.
+EXAMPLE_REQUESTS = [
+    "gaming laptop under 80k",
+    "earbuds for the gym under ₹2,000",
+    "fridge between 20k and 30k for a family of four",
+    "pram for a newborn",
+]
 
 
 class IntakeStage:
-    """Returns the example laptop intent, carrying the user's own words."""
+    """Detects category, use, budget and rules. `llm=None` means no LLM is configured: rules only."""
 
     name = StageName.INTAKE
 
+    def __init__(self, llm: LLMClient | None = None) -> None:
+        self.llm = llm
+
     def run(self, inp: IntakeInput, ctx: StageContext) -> Intent:
-        return Intent.model_validate({**examples.intent().model_dump(), "raw_query": inp.raw_query})
+        text = detection_text(inp)
+        if not any(ch.isalpha() for ch in text):
+            # "???" or "123": nothing to read, so ask, and spend no LLM call on it.
+            intent = no_category_intent(inp.raw_query, text, "rules")
+        else:
+            intent = self._detect(text, inp.raw_query, ctx)
+        return apply_clarification_rules(intent, inp)
 
     def fallback(self, inp: IntakeInput, ctx: StageContext, error: Exception) -> Intent:
-        # Same fixed intent, but marked as rule-based so nobody mistakes it for a model's reading.
+        return apply_clarification_rules(detect_by_rules(detection_text(inp), inp.raw_query), inp)
+
+    def _detect(self, text: str, raw_query: str, ctx: StageContext) -> Intent:
+        if self.llm is None:
+            return detect_by_rules(text, raw_query)
+        search_id = ctx.search_id if ctx.search_id.startswith("srch_") else None
+        try:
+            raw = self.llm.complete(
+                LLMTask.DETECT_INTENT, SYSTEM_PROMPT, user_message(text), RawIntent, search_id=search_id
+            )
+        except LLMUnavailable:
+            log.info("intake: no LLM provider answered; using the keyword rules")
+            return detect_by_rules(text, raw_query)
+        return to_intent(raw, text, raw_query)
+
+
+def detection_text(inp: IntakeInput) -> str:
+    """The request plus the reply to our follow-up question, if there was one."""
+    if inp.previous_clarification_reply:
+        return f"{inp.raw_query}\n{inp.previous_clarification_reply}"
+    return inp.raw_query
+
+
+def apply_clarification_rules(intent: Intent, inp: IntakeInput) -> Intent:
+    """US-01: if the reply to our question is still unclear, show example requests; never guess a category."""
+    if intent.needs_clarification and inp.unclear_attempts >= 1:
         return Intent.model_validate(
-            {**examples.intent().model_dump(), "raw_query": inp.raw_query, "detected_by": "rules"}
+            {
+                **intent.model_dump(),
+                "category": None,
+                "category_label": None,
+                "clarification_question": None,
+                "clarification_options": [],
+                "show_example_requests": True,
+            }
         )
+    return intent
+
+
+def revise_intent(intent: Intent, changes: Mapping[str, object]) -> Intent:
+    """Apply a user's edits to the detected intent, with full validation (US-05 exposes this over HTTP).
+
+    Raises pydantic.ValidationError if the edited intent breaks a contract rule.
+    """
+    return Intent.model_validate({**intent.model_dump(), **changes})
