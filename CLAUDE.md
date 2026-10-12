@@ -77,6 +77,7 @@ python -m app.cli "best laptop for coding under 70k"   # run the pipeline end to
 - Commits are made by the team member who did the work, under their own name. For real pair work add
   `Co-authored-by: Name <email>`. Never commit as someone else.
 - Never commit `.env`, API keys, model weights, or large data files.
+- .claude/settings.json blocks git push for Claude Code; members push their own work.
 
 ## When unsure
 
