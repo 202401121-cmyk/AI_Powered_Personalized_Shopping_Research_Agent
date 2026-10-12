@@ -2,7 +2,9 @@
 
     python -m app.cli "best laptop for coding under 70k"
 
-Answers the first interview question with "medium", runs the search pipeline and prints the shortlist.
+Shows what it understood from the request (US-02), asks the follow-up question instead of searching when the
+product is unclear (US-01), answers the first interview question with "medium", runs the search pipeline and
+prints the shortlist. Works with no API keys: intake then uses its keyword rules.
 """
 
 from __future__ import annotations
@@ -11,7 +13,17 @@ import argparse
 import io
 import sys
 
-from app.contracts import InterviewState, InterviewTurn, SearchRequest, SearchResult, Source
+from app.contracts import (
+    Budget,
+    Intent,
+    InterviewState,
+    InterviewTurn,
+    Money,
+    SearchRequest,
+    SearchResult,
+    Source,
+)
+from app.intake import EXAMPLE_REQUESTS
 from app.pipeline import InMemoryResultStore, PipelineRunner, default_search_stages
 from app.presearch import interview_turn, make_criteria, start_request
 
@@ -32,8 +44,9 @@ def main(argv: list[str] | None = None) -> int:
 
     intent = start_request(query)
     if not intent.ready_for_research:
-        print(intent.clarification_question or "Please say what kind of product you want.")
-        return 1
+        print(clarification(intent))
+        return 1  # no research until the category is known (US-01)
+    print(f"Understood: {describe(intent)}")
 
     state = InterviewState(session_id=CLI_SESSION_ID, intent=intent, criteria=make_criteria(intent))
     step = interview_turn(InterviewTurn(state=state))
@@ -49,6 +62,64 @@ def main(argv: list[str] | None = None) -> int:
     result = PipelineRunner(default_search_stages(), InMemoryResultStore()).run(request)
     print(render(result))
     return 0
+
+
+def describe(intent: Intent) -> str:
+    """The detected intent in one line, so the user can see what was understood (US-02)."""
+    parts = [intent.category_label or "Unknown product"]
+    if intent.use_case:
+        parts.append(f"use {intent.use_case}")
+    parts.append(budget_text(intent.budget))
+    parts += [f"{len(intent.hard_rules)} must-haves"] if intent.hard_rules else []
+    parts += [f"excluding {', '.join(e.value for e in intent.exclusions)}"] if intent.exclusions else []
+    parts += [f"region {intent.region}", f"detected by {intent.detected_by}"]
+    return " · ".join(parts)
+
+
+def clarification(intent: Intent) -> str:
+    """The follow-up question with its options, or example requests after a second unclear reply (US-01)."""
+    if intent.show_example_requests:
+        lines = ["I still can't tell what you're looking for. Try a request like:"]
+        return "\n".join(lines + [f"  - {example}" for example in EXAMPLE_REQUESTS])
+    lines = [intent.clarification_question or "What kind of product are you looking for?"]
+    lines += [f"  {i}. {option}" for i, option in enumerate(intent.clarification_options, start=1)]
+    if intent.budget:
+        lines.append(f"(Noted: {budget_text(intent.budget)}.)")
+    return "\n".join(lines)
+
+
+def budget_text(budget: Budget | None) -> str:
+    if budget is None:
+        return "no budget given"
+    if budget.min and budget.max:
+        return f"budget {money(budget.min)} to {money(budget.max)}"
+    if budget.max:
+        return f"budget up to {money(budget.max)}"
+    return f"budget from {money(budget.min)}" if budget.min else "no budget given"
+
+
+def money(value: Money) -> str:
+    """₹1,50,000 in Indian digit grouping; other currencies as $800."""
+    whole = int(value.amount)
+    amount = _indian_grouping(whole) if value.currency == "INR" else f"{whole:,}"
+    if value.amount != whole:
+        amount += f"{value.amount - whole:.2f}"[1:]
+    return f"{_SYMBOLS.get(value.currency, value.currency + ' ')}{amount}"
+
+
+_SYMBOLS = {"INR": "₹", "USD": "$"}
+
+
+def _indian_grouping(number: int) -> str:
+    digits = str(number)
+    if len(digits) <= 3:
+        return digits
+    head, tail = digits[:-3], digits[-3:]
+    groups: list[str] = []
+    while len(head) > 2:
+        groups.insert(0, head[-2:])
+        head = head[:-2]
+    return ",".join([head, *groups, tail]) if head else ",".join([*groups, tail])
 
 
 def render(result: SearchResult) -> str:

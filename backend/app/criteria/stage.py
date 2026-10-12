@@ -6,12 +6,22 @@ from app.contracts import CriteriaInput, CriteriaSet, StageContext, StageName, e
 
 
 class CriteriaStage:
-    """Returns the example laptop criteria whatever the category, until US-03."""
+    """Returns the example laptop criteria for whatever category was asked, until US-03.
+
+    The category is set to the one requested, because the interview checks that the intent and the
+    criteria agree; that keeps the walking skeleton running for every category intake can detect.
+    """
 
     name = StageName.CRITERIA
 
     def run(self, inp: CriteriaInput, ctx: StageContext) -> CriteriaSet:
-        return examples.criteria()
+        return _for_request(inp, "generated")
 
     def fallback(self, inp: CriteriaInput, ctx: StageContext, error: Exception) -> CriteriaSet:
-        return CriteriaSet.model_validate({**examples.criteria().model_dump(), "source": "fallback"})
+        return _for_request(inp, "fallback")
+
+
+def _for_request(inp: CriteriaInput, source: str) -> CriteriaSet:
+    return CriteriaSet.model_validate(
+        {**examples.criteria().model_dump(), "category": inp.category, "use_case": inp.use_case, "source": source}
+    )

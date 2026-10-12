@@ -17,3 +17,16 @@ def test_cli_prints_a_ranked_list_with_sources(capsys: pytest.CaptureFixture[str
     assert "Filtered out:" in out and "Aurora Air 13" in out
     assert "₹70,000" in out  # the rupee sign survives, not "?"
     assert "Coverage note: YouTube timed out." in out
+
+
+def test_cli_shows_what_it_understood(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["best laptop for coding under 70k"]) == 0
+    assert "Understood: Laptop · budget up to ₹70,000 · region IN" in capsys.readouterr().out
+
+
+def test_cli_asks_instead_of_searching_when_the_product_is_unclear(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["watch under 5k"]) == 1
+    out = capsys.readouterr().out
+    assert "Which kind of watch do you mean?" in out
+    assert "1. Smartwatch" in out
+    assert "Results for" not in out  # no research until the category is known

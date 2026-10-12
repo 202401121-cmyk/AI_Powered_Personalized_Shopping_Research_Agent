@@ -2,6 +2,15 @@
 
 from .budget import parse_budget, region_for
 from .lexicon import load_lexicon
-from .stage import IntakeStage
+from .rules import detect_by_rules
+from .stage import EXAMPLE_REQUESTS, IntakeStage, revise_intent
 
-__all__ = ["IntakeStage", "load_lexicon", "parse_budget", "region_for"]
+__all__ = [
+    "EXAMPLE_REQUESTS",
+    "IntakeStage",
+    "detect_by_rules",
+    "load_lexicon",
+    "parse_budget",
+    "region_for",
+    "revise_intent",
+]
