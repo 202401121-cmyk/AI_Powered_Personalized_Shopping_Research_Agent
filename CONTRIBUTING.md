@@ -18,6 +18,9 @@ pytest -q                                               # should pass before you
 
 Check `git config user.email` matches an email on your GitHub account; otherwise your commits won't count as yours.
 
+Windows: use Git Bash or PowerShell. After cloning, run `git config core.autocrlf false`;
+`.gitattributes` keeps line endings consistent.
+
 ## Building a story, step by step
 
 1. **Pick** your story on the Projects board and move it to *In Progress*. Assign yourself.
