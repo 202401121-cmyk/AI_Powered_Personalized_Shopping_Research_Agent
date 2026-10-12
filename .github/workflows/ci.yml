@@ -41,6 +41,31 @@ jobs:
             echo "::error::shared/contracts is out of date. Run 'python -m scripts.export_contracts' and commit.";
             exit 1; }
 
+  # Most members build on Windows; this catches encoding and line-ending bugs the Linux job can't see.
+  backend-windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: backend/pyproject.toml
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Tests (no live APIs)
+        run: pytest -q -m "not live"
+      - name: Shared contracts are up to date
+        run: |
+          python -m scripts.export_contracts
+          git diff --exit-code -- ../shared/contracts || {
+            echo "::error::shared/contracts is out of date. Run 'python -m scripts.export_contracts' and commit.";
+            exit 1; }
+
   secrets:
     runs-on: ubuntu-latest
     steps:
