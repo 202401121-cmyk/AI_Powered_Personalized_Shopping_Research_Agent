@@ -21,6 +21,11 @@ SOURCES_PER_PRODUCT = 2
 
 
 def main(argv: list[str] | None = None) -> int:
+    # Windows defaults stdout to cp1252 when output is piped, which can't encode the ₹ sign.
+    # Print UTF-8 instead; errors="replace" keeps the guarantee that output never crashes the CLI.
+    if isinstance(sys.stdout, io.TextIOWrapper):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
     parser = argparse.ArgumentParser(prog="python -m app.cli", description="Run one ShopSense search.")
     parser.add_argument("query", help='what you want, e.g. "best laptop for coding under 70k"')
     query: str = parser.parse_args(argv).query
@@ -92,7 +97,4 @@ def top_sources(result: SearchResult, product_id: str) -> list[str]:
 
 
 if __name__ == "__main__":
-    # A Windows console may not be able to show the ₹ sign; print a '?' rather than crash.
-    if isinstance(sys.stdout, io.TextIOWrapper):
-        sys.stdout.reconfigure(errors="replace")
     sys.exit(main())
