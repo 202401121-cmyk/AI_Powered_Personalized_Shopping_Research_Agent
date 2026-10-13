@@ -23,7 +23,7 @@ from app.llm.providers import Adapter
 from tests.fakes.llm import FakeAdapter, FakeLLMClient
 
 ORDER = [Provider.GROQ, Provider.GEMINI, Provider.OPENROUTER, Provider.CEREBRAS]
-TASK = LLMTask.GENERATE_CRITERIA  # not personal, not chunkable
+TASK = LLMTask.DISCOVER_ALIASES  # not personal, not chunkable, so every provider may be tried
 SYSTEM = "You suggest laptop criteria."
 OK = '{"product": "Nova Book 14", "claims": []}'
 
