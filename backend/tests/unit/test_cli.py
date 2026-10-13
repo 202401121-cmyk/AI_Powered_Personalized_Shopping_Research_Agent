@@ -35,6 +35,6 @@ def test_cli_asks_instead_of_searching_when_the_product_is_unclear(capsys: pytes
 def test_cli_lists_the_criteria_with_their_definitions(capsys: pytest.CaptureFixture[str]) -> None:
     assert main(["standing desk under 20k"]) == 0
     out = capsys.readouterr().out
-    assert "Criteria (fallback):" in out  # no LLM in tests, so the furniture family's set
-    assert "  - Ergonomic support: How well it supports your back, neck and posture" in out
+    assert "Criteria (fallback):" in out  # no LLM in tests, so the standing desk's own set
+    assert "  - Height range: How low and high the desk goes" in out
     assert "  - Value for money: " in out

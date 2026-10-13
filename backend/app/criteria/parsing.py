@@ -18,7 +18,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 from app.contracts import CriteriaInput, CriteriaSet, Criterion, Direction
 from app.contracts.criteria import VAGUE_CRITERIA
 
-from .fallback import family_set
+from .fallback import fallback_criteria
 
 log = logging.getLogger(__name__)
 
@@ -108,7 +108,7 @@ class RawCriteria(BaseModel):
 
 def to_criteria_set(raw: RawCriteria, inp: CriteriaInput) -> CriteriaSet | None:
     """A generated CriteriaSet, or None if fewer than 6 usable criteria remain after cleaning."""
-    criteria = clean_criteria(raw, family_set(inp.category).value_for_money)
+    criteria = clean_criteria(raw, fallback_criteria(inp.category).value_for_money)
     if len(criteria) < MIN_CRITERIA:
         log.info("criteria: only %d usable criteria for %s", len(criteria), inp.category)
         return None

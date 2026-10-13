@@ -1,7 +1,9 @@
-# Fixed criteria sets, one per product family (US-03). Loaded and checked by app/criteria/fallback.py.
+# Fixed criteria sets (US-03). Loaded and checked by app/criteria/fallback.py.
 #
 # Used when the LLM cannot give at least 6 usable criteria (after one retry) or no LLM is available.
-# Every category in categories.yaml names its family; a new or unknown category uses "generic".
+# Lookup order: the category's own set (in `categories:` below), else its family's set (every category in
+# categories.yaml names its family), else "generic" for a new or unknown category. A category gets its own set
+# when its family set would offer criteria that do not fit it (a standing desk is not a mattress).
 # Each set has 7 or 8 criteria and exactly one value-for-money criterion. Definitions are plain English
 # (about Grade 8, 10-25 words): what the criterion measures and why it matters. They are shown to shoppers
 # and reused by the interview (US-05, US-07, US-39), so keep them short and clear.
@@ -485,5 +487,306 @@ families:
       - key: value_for_money
         label: Value for money
         definition: How much you get for the price you pay, compared with other choices at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+# Category-level sets: these replace the family set for the categories named here.
+categories:
+  laptop:
+    criteria:
+      - key: processor_speed
+        label: Processor speed
+        definition: How fast the processor handles heavy work such as coding, video editing or many open apps without slowing down.
+        default_weight: 9
+      - key: memory_and_storage
+        label: RAM and storage
+        definition: How much RAM and SSD space it has, so many apps stay open and your files fit without running out of room.
+        default_weight: 7
+      - key: battery_life
+        label: Battery life
+        definition: How many hours it runs on one charge during real work, so you can use it away from a plug.
+        unit: h
+        default_weight: 7
+      - key: display_quality
+        label: Display quality
+        definition: How sharp, bright and easy on the eyes the screen is for long hours, including use near a sunny window.
+        default_weight: 6
+      - key: keyboard_comfort
+        label: Keyboard comfort
+        definition: How pleasant and accurate the keys feel during long typing sessions, including a backlight for dim rooms.
+        default_weight: 6
+      - key: weight
+        label: Weight
+        definition: How heavy it is to carry every day in a bag; a lighter laptop is easier for travel and college.
+        direction: lower_is_better
+        unit: kg
+        default_weight: 5
+      - key: build_durability
+        label: Build durability
+        definition: How well the body, hinge and ports hold up to daily carrying, opening and closing over several years.
+        default_weight: 5
+      - key: value_for_money
+        label: Value for money
+        definition: How much laptop you get for the price you pay, compared with other models at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  smartphone:
+    criteria:
+      - key: camera_quality
+        label: Camera quality
+        definition: How sharp and natural photos and videos look in daylight and at night, on both the main and front cameras.
+        default_weight: 7
+      - key: battery_life
+        label: Battery life
+        definition: How many hours of real use you get on one charge, so the phone lasts from morning until night.
+        unit: h
+        default_weight: 8
+      - key: processor_speed
+        label: Processor speed
+        definition: How smoothly apps, games and many open tabs run without lag, stutter or the phone getting hot.
+        default_weight: 7
+      - key: display_quality
+        label: Display quality
+        definition: How bright, sharp and smooth the screen looks, including outdoors in sunlight and while scrolling quickly.
+        default_weight: 6
+      - key: software_updates
+        label: Software updates
+        definition: How many years of Android or iOS updates and security fixes the maker promises, keeping the phone safe longer.
+        unit: years
+        default_weight: 5
+      - key: storage_space
+        label: Storage space
+        definition: How much built-in storage it has for photos, videos and apps, and whether you can add a memory card.
+        unit: GB
+        default_weight: 5
+      - key: build_durability
+        label: Build durability
+        definition: How well the phone survives drops, scratches, dust and water, based on its glass and water-resistance rating.
+        default_weight: 5
+      - key: value_for_money
+        label: Value for money
+        definition: How much phone you get for the price you pay, compared with other models at the same budget.
+        is_value_for_money: true
+        default_weight: 7
+
+  earbuds:
+    criteria:
+      - key: sound_quality
+        label: Sound quality
+        definition: How clear, balanced and detailed music and voices sound through the earbuds, from deep bass to crisp high notes.
+        default_weight: 8
+      - key: noise_cancellation
+        label: Noise cancellation
+        definition: How well the earbuds block traffic, office chatter and other outside noise, so you can listen at a lower volume.
+        default_weight: 6
+      - key: battery_life
+        label: Battery life
+        definition: How many hours the earbuds play on one charge, plus the extra charges stored in the case.
+        unit: h
+        default_weight: 6
+      - key: fit_and_comfort
+        label: Fit and comfort
+        definition: How securely and comfortably the earbuds sit in your ears for hours, even while walking or working out.
+        default_weight: 7
+      - key: call_quality
+        label: Call quality
+        definition: How clearly people hear your voice on calls, even on a busy street or in a windy place.
+        default_weight: 5
+      - key: connection_stability
+        label: Connection stability
+        definition: How reliably the earbuds stay connected to your phone without drops, delays or trouble pairing.
+        default_weight: 5
+      - key: water_resistance
+        label: Water resistance
+        definition: How well the earbuds survive sweat and rain, shown by their IPX rating, which matters for gym and outdoor use.
+        default_weight: 4
+      - key: value_for_money
+        label: Value for money
+        definition: How much you get from these earbuds for the price you pay, compared with others at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  headphones:
+    criteria:
+      - key: sound_quality
+        label: Sound quality
+        definition: How clear, balanced and detailed music, films and voices sound, from deep bass to crisp high notes.
+        default_weight: 9
+      - key: noise_cancellation
+        label: Noise cancellation
+        definition: How well the headphones block outside noise such as traffic, fans or flights, so you hear only your audio.
+        default_weight: 7
+      - key: comfort
+        label: Comfort
+        definition: How comfortable the ear cups and headband feel during long hours, without pressing, heating up or causing headaches.
+        default_weight: 7
+      - key: battery_life
+        label: Battery life
+        definition: How many hours the headphones play wirelessly on one charge before you need to plug them in.
+        unit: h
+        default_weight: 5
+      - key: mic_quality
+        label: Microphone quality
+        definition: How clearly others hear your voice on calls and online meetings, even when the room is noisy.
+        default_weight: 5
+      - key: connection_stability
+        label: Connection stability
+        definition: How reliably the Bluetooth link stays steady without drops, and how easily it switches between your devices.
+        default_weight: 4
+      - key: build_durability
+        label: Build durability
+        definition: How well the headband, hinges and ear pads hold up to daily use, travel and being folded into a bag.
+        default_weight: 5
+      - key: value_for_money
+        label: Value for money
+        definition: How much you get from these headphones for the price you pay, compared with others at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  smartwatch:
+    criteria:
+      - key: health_tracking_accuracy
+        label: Health tracking accuracy
+        definition: How closely its heart-rate, step, sleep and workout readings match real values, so you can trust your health data.
+        default_weight: 8
+      - key: battery_life
+        label: Battery life
+        definition: How many days the watch runs on one charge with normal use, so you are not charging it every night.
+        unit: days
+        default_weight: 7
+      - key: display_readability
+        label: Display readability
+        definition: How easy the screen is to read at a glance in bright sunlight, indoors and in the dark.
+        default_weight: 6
+      - key: phone_compatibility
+        label: Phone compatibility
+        definition: How well it works with your phone and its app, including notifications, calls, music control and syncing data.
+        default_weight: 6
+      - key: gps_accuracy
+        label: GPS accuracy
+        definition: How accurately its GPS tracks your route, distance and pace on runs, walks and rides without your phone.
+        default_weight: 5
+      - key: comfort_and_fit
+        label: Comfort and fit
+        definition: How comfortable the strap and case feel on your wrist all day and night, without rubbing or sweating.
+        default_weight: 5
+      - key: water_resistance
+        label: Water resistance
+        definition: How safely it handles water, such as rain, showers and swimming, shown by its water-resistance rating.
+        unit: m
+        default_weight: 4
+      - key: value_for_money
+        label: Value for money
+        definition: How much smartwatch you get for the price you pay, compared with other models at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  television:
+    criteria:
+      - key: picture_quality
+        label: Picture quality
+        definition: How sharp, bright and lifelike the picture looks, including colours, contrast and detail in dark movie scenes.
+        default_weight: 9
+      - key: screen_size_fit
+        label: Screen size for your room
+        definition: Whether the screen size suits your room and viewing distance, so it feels big enough without straining your eyes.
+        default_weight: 6
+      - key: sound_quality
+        label: Sound quality
+        definition: How clear and full the built-in speakers sound for dialogue and music, without needing a separate soundbar.
+        default_weight: 6
+      - key: smart_tv_software
+        label: Smart TV software
+        definition: How smooth and complete the built-in apps and menus are, and how long the maker keeps updating them.
+        default_weight: 5
+      - key: motion_handling
+        label: Motion handling
+        definition: How smoothly fast scenes such as sports and games play without blur or judder, helped by a higher refresh rate.
+        default_weight: 5
+      - key: connectivity
+        label: Ports and connectivity
+        definition: Which ports and wireless links it has, such as HDMI, USB and Wi-Fi, for consoles, set-top boxes and speakers.
+        default_weight: 4
+      - key: reliability
+        label: Reliability
+        definition: How rarely the panel, power board or software fails, based on what owners report after years of use.
+        default_weight: 6
+      - key: value_for_money
+        label: Value for money
+        definition: How much TV you get for the price you pay, compared with other models at the same budget.
+        is_value_for_money: true
+        default_weight: 7
+
+  standing_desk:
+    criteria:
+      - key: height_range
+        label: Height range
+        definition: How low and high the desk goes, so both your sitting and standing heights fit your body and chair.
+        default_weight: 8
+      - key: stability
+        label: Stability
+        definition: How steady the desk stays at standing height, without wobbling when you type, write or lean on it.
+        default_weight: 9
+      - key: lift_motor
+        label: Motor speed and noise
+        definition: How quickly and quietly the motor raises and lowers the desk, which matters in shared rooms and on calls.
+        default_weight: 5
+      - key: load_capacity
+        label: Load capacity
+        definition: How much weight the desk can hold safely, such as monitors, a laptop, books and other equipment.
+        unit: kg
+        default_weight: 6
+      - key: desktop_size
+        label: Desktop size
+        definition: How much surface the top gives you for screens, keyboard and papers, and whether it fits your room.
+        default_weight: 6
+      - key: height_presets
+        label: Memory presets
+        definition: How many saved heights the control panel can store, so switching between sitting and standing takes one touch.
+        default_weight: 3
+      - key: build_durability
+        label: Build durability
+        definition: How well the frame, legs and motor keep working smoothly over years of daily raising and lowering.
+        default_weight: 6
+      - key: value_for_money
+        label: Value for money
+        definition: How much standing desk you get for the price you pay, compared with other models at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  mattress:
+    criteria:
+      - key: firmness_support
+        label: Support and firmness
+        definition: How well it keeps your spine straight while you sleep, with the right firmness for your weight and sleeping position.
+        default_weight: 9
+      - key: pressure_relief
+        label: Pressure relief
+        definition: How well it softens pressure on your shoulders and hips, so you wake up without aches or numbness.
+        default_weight: 8
+      - key: cooling
+        label: Temperature control
+        definition: How well the foam and cover let heat escape, so you stay cool through hot summer nights.
+        default_weight: 6
+      - key: motion_isolation
+        label: Motion isolation
+        definition: How little you feel your partner turning over or getting up, so one person does not wake the other.
+        default_weight: 5
+      - key: edge_support
+        label: Edge support
+        definition: How firm the edges stay when you sit or sleep near them, so the whole bed stays usable.
+        default_weight: 4
+      - key: build_durability
+        label: Build durability
+        definition: How long the foam and springs keep their shape without sagging or forming dips over years of nightly use.
+        default_weight: 7
+      - key: trial_and_warranty
+        label: Trial and warranty
+        definition: How many nights you can try it at home and how many years the maker covers sagging or defects.
+        default_weight: 5
+      - key: value_for_money
+        label: Value for money
+        definition: How much mattress you get for the price you pay, compared with other models at the same budget.
         is_value_for_money: true
         default_weight: 6

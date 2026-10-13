@@ -1,11 +1,13 @@
-"""Fixed criteria sets, one per product family (US-03), from config/criteria_fallback.yaml.
+"""Fixed criteria sets (US-03), from config/criteria_fallback.yaml.
 
 Used when the LLM cannot produce at least 6 usable criteria, or no LLM is available, so the interview always
-has criteria to ask about. Each category in categories.yaml names its family; a new category uses "generic".
+has criteria to ask about. Lookup order: the category's own set, else its family's set, else "generic". Each
+category in categories.yaml names its family; a new category uses "generic".
 """
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 
@@ -24,6 +26,8 @@ class CriteriaConfigError(ValueError):
 
 
 class FamilySet(BaseModel):
+    """One fixed set of criteria, for a product family or for a single category."""
+
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     criteria: list[Criterion] = Field(min_length=7, max_length=8)
@@ -32,9 +36,9 @@ class FamilySet(BaseModel):
     def _check(self) -> FamilySet:
         keys = [c.key for c in self.criteria]
         if len(keys) != len(set(keys)):
-            raise ValueError("criterion keys must be unique within a family")
+            raise ValueError("criterion keys must be unique within a set")
         if sum(c.is_value_for_money for c in self.criteria) != 1:
-            raise ValueError("each family needs exactly one value-for-money criterion")
+            raise ValueError("each set needs exactly one value-for-money criterion")
         return self
 
     @property
@@ -46,29 +50,49 @@ class FallbackFile(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     families: dict[str, FamilySet]
+    categories: dict[str, FamilySet] = Field(default_factory=dict, description="Sets that replace a family's")
+
+
+@dataclass(frozen=True)
+class _Sets:
+    families: dict[str, FamilySet]
+    categories: dict[str, FamilySet]
 
 
 def load_fallback_sets(path: Path | str | None = None) -> dict[str, FamilySet]:
-    """Every family's criteria. Checks that each lexicon family and "generic" exist; raises CriteriaConfigError."""
-    return _load(str(path) if path is not None else str(DEFAULT_FALLBACK_PATH))
+    """Every family's criteria. Raises CriteriaConfigError if the file is broken (see _load for the checks)."""
+    return _load(_path(path)).families
+
+
+def load_category_sets(path: Path | str | None = None) -> dict[str, FamilySet]:
+    """The categories that have their own criteria, replacing their family's set."""
+    return _load(_path(path)).categories
+
+
+def _path(path: Path | str | None) -> str:
+    return str(path) if path is not None else str(DEFAULT_FALLBACK_PATH)
 
 
 @lru_cache(maxsize=4)
-def _load(path: str) -> dict[str, FamilySet]:
+def _load(path: str) -> _Sets:
     try:
         raw = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
     except (OSError, yaml.YAMLError) as exc:
         raise CriteriaConfigError(f"cannot read fallback criteria {path}: {exc}") from exc
     try:
-        families = FallbackFile.model_validate(raw).families
+        data = FallbackFile.model_validate(raw)
     except ValidationError as exc:
         raise CriteriaConfigError(f"invalid fallback criteria {path}:\n{exc}") from exc
 
-    needed = {entry.family for entry in load_lexicon().data.categories} | {GENERIC_FAMILY}
-    missing = sorted(needed - set(families))
+    lexicon = load_lexicon()
+    needed = {entry.family for entry in lexicon.data.categories} | {GENERIC_FAMILY}
+    missing = sorted(needed - set(data.families))
     if missing:
         raise CriteriaConfigError(f"categories.yaml names families with no fallback set in {path}: {missing}")
-    return families
+    unknown = sorted(set(data.categories) - set(lexicon.categories))
+    if unknown:
+        raise CriteriaConfigError(f"{path} has category sets for categories not in categories.yaml: {unknown}")
+    return _Sets(families=data.families, categories=data.categories)
 
 
 def family_for(category: str) -> str:
@@ -78,14 +102,20 @@ def family_for(category: str) -> str:
 
 
 def family_set(category: str) -> FamilySet:
+    """The category's family set, ignoring any category-level set."""
     return load_fallback_sets()[family_for(category)]
 
 
+def fallback_criteria(category: str) -> FamilySet:
+    """The fixed criteria for a category: its own set, else its family's, else "generic"."""
+    return load_category_sets().get(category) or family_set(category)
+
+
 def fallback_set(inp: CriteriaInput) -> CriteriaSet:
-    """The fixed criteria for the request's family, marked source="fallback"."""
+    """The fixed criteria for the request's category, marked source="fallback"."""
     return CriteriaSet(
         category=inp.category,
         use_case=inp.use_case,
-        criteria=family_set(inp.category).criteria,
+        criteria=fallback_criteria(inp.category).criteria,
         source="fallback",
     )

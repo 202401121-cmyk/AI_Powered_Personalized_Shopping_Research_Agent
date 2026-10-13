@@ -13,7 +13,7 @@ from collections.abc import Callable
 import pytest
 
 from app.contracts import CriteriaInput, CriteriaSet, LLMTask, LLMUnavailable, Provider
-from app.criteria.fallback import fallback_set, family_set
+from app.criteria.fallback import fallback_criteria, fallback_set
 from app.criteria.parsing import RawCriteria, is_vague, to_criteria_set
 from app.criteria.prompts import SYSTEM_PROMPT, user_message
 from app.llm import WrapperLLMClient, load_llm_config
@@ -89,7 +89,7 @@ def _weights_defaulted(s: CriteriaSet) -> None:
 
 def _vfm_appended(s: CriteriaSet) -> None:
     assert s.source == "generated"
-    assert s.criteria[-1] == family_set("laptop").value_for_money  # the family's own, appended last
+    assert s.criteria[-1] == fallback_criteria("laptop").value_for_money  # the laptop set's own, appended last
     assert sum(c.is_value_for_money for c in s.criteria) == 1
 
 
