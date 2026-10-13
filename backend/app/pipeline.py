@@ -242,7 +242,7 @@ class PipelineRunner:
         partial = False
         steps = search.steps()
         for i, (_name, step) in enumerate(steps):
-            if ctx.seconds_left <= 0:
+            if search.out_of_time or ctx.seconds_left <= 0:
                 search.reports += [_skipped(n, OUT_OF_TIME) for n, _ in steps[i:]]
                 partial = True
                 break
@@ -253,7 +253,7 @@ class PipelineRunner:
                 partial = True
                 break
 
-        result = search.result(started_at, partial)
+        result = search.result(started_at, partial or search.out_of_time)
         return self._save(result)
 
     def _save(self, result: SearchResult) -> SearchResult:
@@ -282,6 +282,7 @@ class _Search:
         self.request = request
         self.rubric = request.rubric
         self.ctx = ctx
+        self.out_of_time = False  # set when the search's own deadline cut a stage off
         self.reports: list[StageReport] = []
         self.research_out: ResearchResult | None = None
         self.claims: list[Claim] = []
@@ -306,7 +307,15 @@ class _Search:
         ]
 
     def _run(self, stage: Stage[In, Out], inp: In) -> tuple[Out | None, StageReport]:
-        return run_stage(stage, inp, self.ctx, self.limits[stage.name])
+        limit = self.limits[stage.name]
+        budget = self.ctx.seconds_left  # read once, so the decision below matches the wait that ran
+        out, report = run_stage(stage, inp, self.ctx, min(limit, budget))
+        if report.status is StageStatus.TIMEOUT and budget < limit:
+            # The search's deadline, not the stage's own limit, cut this stage off: the search is out of time.
+            # Don't rely on seconds_left reading exactly 0 afterwards; a timed wait can wake a moment before
+            # its deadline (seen on GitHub's Windows runners), which used to let the next stages start.
+            self.out_of_time = True
+        return out, report
 
     @property
     def weight_keys(self) -> list[str]:
@@ -331,6 +340,8 @@ class _Search:
                 break  # the fallback failed; merge() reports FAILED and the runner stops
             self.claims += out.claims
             self.mentions += out.mentions
+            if self.out_of_time:
+                break  # no time left to read the remaining sources
         return _merge(StageName.EXTRACT, reports)
 
     def match(self) -> StageReport:
