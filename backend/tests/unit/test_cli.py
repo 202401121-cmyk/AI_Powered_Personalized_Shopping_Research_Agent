@@ -30,3 +30,11 @@ def test_cli_asks_instead_of_searching_when_the_product_is_unclear(capsys: pytes
     assert "Which kind of watch do you mean?" in out
     assert "1. Smartwatch" in out
     assert "Results for" not in out  # no research until the category is known
+
+
+def test_cli_lists_the_criteria_with_their_definitions(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["standing desk under 20k"]) == 0
+    out = capsys.readouterr().out
+    assert "Criteria (fallback):" in out  # no LLM in tests, so the standing desk's own set
+    assert "  - Height range: How low and high the desk goes" in out
+    assert "  - Value for money: " in out

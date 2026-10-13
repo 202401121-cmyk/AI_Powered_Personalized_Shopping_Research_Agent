@@ -37,6 +37,7 @@ class LLMTask(StrEnum):
 PERSONAL_TASKS: frozenset[LLMTask] = frozenset(
     {
         LLMTask.DETECT_INTENT,
+        LLMTask.GENERATE_CRITERIA,  # the use case is the user's own words (team decision, #dev)
         LLMTask.CLASSIFY_REPLY,
         LLMTask.ANSWER_USER_QUESTION,
         LLMTask.WRITE_QUESTION,

@@ -371,6 +371,12 @@ def test_personal_tasks_include_everything_with_user_words() -> None:
     assert C.LLMTask.EXTRACT_CLAIMS not in C.PERSONAL_TASKS  # public web text only
 
 
+def test_generate_criteria_is_a_personal_task() -> None:
+    # The criteria request carries the user's own words as the use case, so it must stay off
+    # Gemini's free tier (build rule 8; team decision for US-03).
+    assert C.LLMTask.GENERATE_CRITERIA in C.PERSONAL_TASKS
+
+
 def test_call_record_is_valid() -> None:
     rec = C.LLMCallRecord(
         task="extract_claims",

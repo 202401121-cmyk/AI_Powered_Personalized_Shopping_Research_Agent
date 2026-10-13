@@ -1,0 +1,792 @@
+# Fixed criteria sets (US-03). Loaded and checked by app/criteria/fallback.py.
+#
+# Used when the LLM cannot give at least 6 usable criteria (after one retry) or no LLM is available.
+# Lookup order: the category's own set (in `categories:` below), else its family's set (every category in
+# categories.yaml names its family), else "generic" for a new or unknown category. A category gets its own set
+# when its family set would offer criteria that do not fit it (a standing desk is not a mattress).
+# Each set has 7 or 8 criteria and exactly one value-for-money criterion. Definitions are plain English
+# (about Grade 8, 10-25 words): what the criterion measures and why it matters. They are shown to shoppers
+# and reused by the interview (US-05, US-07, US-39), so keep them short and clear.
+# direction: higher_is_better | lower_is_better.  default_weight: 0-10, how much it usually matters.
+
+families:
+  computing:
+    criteria:
+      - key: processing_speed
+        label: Processing speed
+        definition: How quickly it handles your work, such as opening apps, loading pages or printing, without lag or waiting.
+        default_weight: 8
+      - key: reliability
+        label: Reliability
+        definition: How rarely it freezes, crashes or drops its connection in daily use, based on what owners report.
+        default_weight: 7
+      - key: ease_of_use
+        label: Ease of use
+        definition: How simple it is to set up and use every day, without confusing menus, drivers or extra steps.
+        default_weight: 6
+      - key: connectivity
+        label: Ports and connectivity
+        definition: Which ports and wireless links it has, so it works with your other devices without extra adapters.
+        default_weight: 5
+      - key: build_durability
+        label: Build durability
+        definition: How well the body, keys, buttons and hinges hold up to daily handling and travel over several years.
+        default_weight: 5
+      - key: size_and_weight
+        label: Size and weight
+        definition: How much space it takes and how easy it is to carry or move; smaller and lighter is easier.
+        direction: lower_is_better
+        default_weight: 4
+      - key: after_sales_support
+        label: After-sales support
+        definition: How easy it is to get repairs, warranty service and software updates from the maker where you live.
+        default_weight: 4
+      - key: value_for_money
+        label: Value for money
+        definition: How much you get for the price you pay, compared with other choices at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  phone:
+    criteria:
+      - key: camera_quality
+        label: Camera quality
+        definition: How sharp and true-to-life photos and videos look, in daylight and at night, on the main and front cameras.
+        default_weight: 7
+      - key: battery_life
+        label: Battery life
+        definition: How many hours of real use you get on one charge, so the phone lasts from morning until night.
+        unit: h
+        default_weight: 8
+      - key: processor_speed
+        label: Processor speed
+        definition: How smoothly the phone runs apps, games and many open tabs without lag, stutter or heating up.
+        default_weight: 7
+      - key: display_quality
+        label: Display quality
+        definition: How bright, sharp and smooth the screen looks, including outdoors in sunlight and while scrolling.
+        default_weight: 6
+      - key: software_updates
+        label: Software updates
+        definition: How many years of Android or iOS updates and security fixes the maker promises, which keeps the phone safe longer.
+        unit: years
+        default_weight: 5
+      - key: charging_speed
+        label: Charging speed
+        definition: How quickly the battery charges with the supplied charger; faster charging means less time stuck near a plug.
+        default_weight: 4
+      - key: build_durability
+        label: Build durability
+        definition: How well the phone survives drops, scratches, dust and water, including its glass and water-resistance rating.
+        default_weight: 5
+      - key: value_for_money
+        label: Value for money
+        definition: How much you get for the price you pay, compared with other choices at the same budget.
+        is_value_for_money: true
+        default_weight: 7
+
+  audio:
+    criteria:
+      - key: sound_quality
+        label: Sound quality
+        definition: How clear, balanced and detailed music and voices sound, from deep bass to crisp high notes.
+        default_weight: 9
+      - key: battery_life
+        label: Battery life
+        definition: How many hours it plays on one charge, so it lasts through your commute, workout or party.
+        unit: h
+        default_weight: 6
+      - key: connection_stability
+        label: Connection stability
+        definition: How reliably the Bluetooth or wired link stays connected without drops, delays or trouble pairing with your phone.
+        default_weight: 6
+      - key: mic_quality
+        label: Microphone quality
+        definition: How clearly other people hear your voice on calls and voice commands, even in noisy places.
+        default_weight: 5
+      - key: comfort_and_portability
+        label: Comfort and portability
+        definition: How comfortable it is to wear for hours, or how easy it is to carry and place around your home.
+        default_weight: 6
+      - key: build_durability
+        label: Build durability
+        definition: How well it survives sweat, rain, drops and daily handling, including its water-resistance rating.
+        default_weight: 5
+      - key: loudness
+        label: Loudness
+        definition: How loud it can play while the sound stays clean, without crackling or distortion at high volume.
+        default_weight: 4
+      - key: value_for_money
+        label: Value for money
+        definition: How much you get for the price you pay, compared with other choices at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  wearable:
+    criteria:
+      - key: battery_life
+        label: Battery life
+        definition: How many days it runs before it needs a charge or a new battery, so it is ready when you are.
+        unit: days
+        default_weight: 7
+      - key: tracking_accuracy
+        label: Tracking accuracy
+        definition: How closely its step, heart-rate, sleep and workout readings match real values, so you can trust the numbers.
+        default_weight: 7
+      - key: display_readability
+        label: Display readability
+        definition: How easy the screen or dial is to read at a glance, in bright sunlight and in the dark.
+        default_weight: 6
+      - key: comfort_and_fit
+        label: Comfort and fit
+        definition: How comfortable the strap and case feel on your wrist all day and night, without rubbing or sweating.
+        default_weight: 6
+      - key: build_durability
+        label: Build durability
+        definition: How well the case, glass and strap resist scratches, knocks and sweat over years of daily wear.
+        default_weight: 5
+      - key: water_resistance
+        label: Water resistance
+        definition: How deep and how long it can stay in water safely, such as for swimming, showers or heavy rain.
+        unit: m
+        default_weight: 4
+      - key: phone_compatibility
+        label: Phone compatibility
+        definition: How well it works with your phone and its app, including notifications, calls and syncing your data.
+        default_weight: 5
+      - key: value_for_money
+        label: Value for money
+        definition: How much you get for the price you pay, compared with other choices at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  tv_and_camera:
+    criteria:
+      - key: picture_quality
+        label: Picture quality
+        definition: How sharp, bright and true-to-life the picture looks, including colours, contrast and detail in dark scenes.
+        default_weight: 9
+      - key: low_light_performance
+        label: Low-light performance
+        definition: How clean and clear the picture stays in dim rooms or at night, without grainy noise or blur.
+        default_weight: 6
+      - key: sound_quality
+        label: Sound quality
+        definition: How clear and full the built-in speakers or microphone sound, without needing extra audio equipment.
+        default_weight: 5
+      - key: software_and_apps
+        label: Software and apps
+        definition: How smooth and complete the built-in software is, including apps, menus and regular updates from the maker.
+        default_weight: 5
+      - key: connectivity
+        label: Ports and connectivity
+        definition: Which ports and wireless links it has, such as HDMI, USB and Wi-Fi, for your other devices.
+        default_weight: 4
+      - key: ease_of_use
+        label: Ease of use
+        definition: How simple the remote, buttons and menus are to learn and use every day, for everyone at home.
+        default_weight: 5
+      - key: build_durability
+        label: Build durability
+        definition: How well it holds up over years of use, including its body, buttons and resistance to heat and dust.
+        default_weight: 4
+      - key: value_for_money
+        label: Value for money
+        definition: How much you get for the price you pay, compared with other choices at the same budget.
+        is_value_for_money: true
+        default_weight: 7
+
+  large_appliance:
+    criteria:
+      - key: energy_efficiency
+        label: Energy efficiency
+        definition: How little electricity it uses for the same job, shown by its BEE star rating, which keeps bills low for years.
+        default_weight: 8
+      - key: capacity
+        label: Capacity
+        definition: Whether its size in litres, kilograms or tons suits your family and room, so it is not too small.
+        default_weight: 7
+      - key: effectiveness
+        label: Effectiveness
+        definition: How well it does its main job, such as cooling, washing, heating or purifying, in real home use.
+        default_weight: 8
+      - key: noise_level
+        label: Noise level
+        definition: How quietly it runs, which matters for appliances placed near bedrooms or living areas.
+        direction: lower_is_better
+        unit: dB
+        default_weight: 4
+      - key: reliability
+        label: Reliability
+        definition: How rarely it breaks down or needs repairs, based on what owners report after several years of use.
+        default_weight: 7
+      - key: after_sales_service
+        label: After-sales service
+        definition: How quickly and easily you can get installation, repairs and spare parts from the brand in your city.
+        default_weight: 6
+      - key: warranty_length
+        label: Warranty length
+        definition: How many years the maker repairs it for free, especially the costly compressor or motor.
+        unit: years
+        default_weight: 5
+      - key: value_for_money
+        label: Value for money
+        definition: How much you get for the price you pay, compared with other choices at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  kitchen_appliance:
+    criteria:
+      - key: cooking_results
+        label: Cooking results
+        definition: How well it does its kitchen job, such as grinding, heating or frying, giving even results every time.
+        default_weight: 9
+      - key: speed
+        label: Speed
+        definition: How quickly it finishes a typical task, such as grinding chutney, boiling water or reheating a meal.
+        default_weight: 6
+      - key: ease_of_cleaning
+        label: Ease of cleaning
+        definition: How easy it is to wash the jars, trays or filters after use, without hard-to-reach corners.
+        default_weight: 6
+      - key: safety
+        label: Safety
+        definition: How well it protects you, with overload cut-off, auto shut-off, child locks and handles that stay cool.
+        default_weight: 7
+      - key: noise_level
+        label: Noise level
+        definition: How quietly it runs, which matters in small kitchens, early mornings and homes with sleeping babies.
+        direction: lower_is_better
+        unit: dB
+        default_weight: 4
+      - key: build_durability
+        label: Build durability
+        definition: How well the motor, jars, body and buttons hold up after years of daily cooking.
+        default_weight: 6
+      - key: after_sales_service
+        label: After-sales service
+        definition: How easy it is to get repairs, spare jars and other parts from the brand near you.
+        default_weight: 5
+      - key: value_for_money
+        label: Value for money
+        definition: How much you get for the price you pay, compared with other choices at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  home_comfort:
+    criteria:
+      - key: effectiveness
+        label: Effectiveness
+        definition: How well it does its main job, such as moving air, cleaning the air, picking up dust or removing creases.
+        default_weight: 9
+      - key: energy_efficiency
+        label: Energy efficiency
+        definition: How little electricity it uses for the same job, which keeps bills low when it runs for hours.
+        default_weight: 6
+      - key: noise_level
+        label: Noise level
+        definition: How quietly it runs, which matters most at night or while you work, study or watch TV.
+        direction: lower_is_better
+        unit: dB
+        default_weight: 6
+      - key: ease_of_use
+        label: Ease of use
+        definition: How simple it is to control, carry and set up, including its remote, app or buttons.
+        default_weight: 5
+      - key: running_cost
+        label: Running cost
+        definition: How much you spend later on filters, bags or servicing to keep it working well each year.
+        direction: lower_is_better
+        default_weight: 5
+      - key: build_durability
+        label: Build durability
+        definition: How well the motor and body hold up over years of daily use without breaking or wearing out.
+        default_weight: 5
+      - key: after_sales_service
+        label: After-sales service
+        definition: How easy it is to get repairs, spare parts and warranty service from the brand near you.
+        default_weight: 4
+      - key: value_for_money
+        label: Value for money
+        definition: How much you get for the price you pay, compared with other choices at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  personal_care:
+    criteria:
+      - key: effectiveness
+        label: Effectiveness
+        definition: How well it does its job, such as a close even trim, quick drying or clean teeth, in one go.
+        default_weight: 9
+      - key: gentleness
+        label: Gentleness on skin and hair
+        definition: How gently it treats your skin and hair, without cuts, burns, pulling or irritation.
+        default_weight: 7
+      - key: battery_life
+        label: Battery life
+        definition: How many minutes it runs on one charge, or whether it can also work while plugged in.
+        unit: min
+        default_weight: 5
+      - key: ease_of_use
+        label: Ease of use
+        definition: How comfortable it is to hold and control, including its grip, weight and simple settings.
+        default_weight: 6
+      - key: ease_of_cleaning
+        label: Ease of cleaning
+        definition: How easy it is to rinse or clean the blades, brush heads or filters after each use.
+        default_weight: 4
+      - key: build_durability
+        label: Build durability
+        definition: How well the motor, blades and body keep working over months of regular use.
+        default_weight: 5
+      - key: attachments
+        label: Attachments included
+        definition: How many useful combs, heads or nozzles come in the box for different styles and needs.
+        default_weight: 3
+      - key: value_for_money
+        label: Value for money
+        definition: How much you get for the price you pay, compared with other choices at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  baby:
+    criteria:
+      - key: safety_standards
+        label: Safety standards
+        definition: Whether it meets recognised child safety standards and has secure harnesses, brakes or locks that protect your baby.
+        default_weight: 10
+      - key: baby_comfort
+        label: Comfort for the baby
+        definition: How well the seat, padding and recline keep your baby comfortable and supported for long periods.
+        default_weight: 8
+      - key: ease_of_use
+        label: Ease of use
+        definition: How quickly a parent can fold, carry, fit or set it up, often with only one free hand.
+        default_weight: 7
+      - key: weight
+        label: Weight
+        definition: How heavy it is to lift, carry and load into a car; a lighter one is easier every day.
+        direction: lower_is_better
+        unit: kg
+        default_weight: 5
+      - key: build_durability
+        label: Build durability
+        definition: How well the frame, fabric and buckles hold up through daily use, and even for a second child.
+        default_weight: 6
+      - key: ease_of_cleaning
+        label: Ease of cleaning
+        definition: How easily the covers come off and wash clean after spills, food and little accidents.
+        default_weight: 5
+      - key: adjustability
+        label: Adjustability
+        definition: How well it adjusts as your baby grows, such as recline positions, harness heights or camera angles.
+        default_weight: 5
+      - key: value_for_money
+        label: Value for money
+        definition: How much you get for the price you pay, compared with other choices at the same budget.
+        is_value_for_money: true
+        default_weight: 5
+
+  furniture:
+    criteria:
+      - key: ergonomic_support
+        label: Ergonomic support
+        definition: How well it supports your back, neck and posture, so you stay comfortable and free of pain for hours.
+        default_weight: 9
+      - key: comfort
+        label: Comfort
+        definition: How soft or firm it feels and how comfortable it stays during long hours of sitting, working or sleeping.
+        default_weight: 8
+      - key: adjustability
+        label: Adjustability
+        definition: How much you can change its height, tilt, firmness or position to suit your body and room.
+        default_weight: 6
+      - key: build_durability
+        label: Build durability
+        definition: How well the frame, foam and moving parts keep their shape and strength over years of daily use.
+        default_weight: 7
+      - key: breathability
+        label: Breathability
+        definition: How well the fabric and foam let air through, so you do not feel hot or sweaty.
+        default_weight: 4
+      - key: ease_of_assembly
+        label: Ease of assembly
+        definition: How easy it is to put together, move and set up at home without special tools or help.
+        default_weight: 3
+      - key: warranty_length
+        label: Warranty length
+        definition: How many years the maker covers defects such as sagging foam, broken parts or failed motors.
+        unit: years
+        default_weight: 5
+      - key: value_for_money
+        label: Value for money
+        definition: How much you get for the price you pay, compared with other choices at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  footwear_and_bags:
+    criteria:
+      - key: comfort_and_fit
+        label: Comfort and fit
+        definition: How well it fits your body and stays comfortable through hours of walking, running or carrying.
+        default_weight: 9
+      - key: support
+        label: Support
+        definition: How well it supports your feet or back, cushioning each step and spreading the load evenly.
+        default_weight: 8
+      - key: weight
+        label: Weight
+        definition: How heavy it is to wear or carry; lighter gear tires you less on long days.
+        direction: lower_is_better
+        unit: g
+        default_weight: 5
+      - key: build_durability
+        label: Build durability
+        definition: How long the soles, seams, zips and fabric last before they wear out or tear.
+        default_weight: 7
+      - key: breathability
+        label: Breathability
+        definition: How well air flows through it, keeping your feet or back cool and dry during activity.
+        default_weight: 5
+      - key: weather_resistance
+        label: Weather resistance
+        definition: How well it handles rain, mud and sweat without soaking through or getting damaged.
+        default_weight: 4
+      - key: value_for_money
+        label: Value for money
+        definition: How much you get for the price you pay, compared with other choices at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  generic:
+    criteria:
+      - key: effectiveness
+        label: Effectiveness
+        definition: How well it does the main job you are buying it for, in real everyday use at home.
+        default_weight: 9
+      - key: reliability
+        label: Reliability
+        definition: How rarely it breaks down or stops working properly, based on what owners report over months of use.
+        default_weight: 7
+      - key: ease_of_use
+        label: Ease of use
+        definition: How simple it is to set up, learn and use every day, without confusing steps.
+        default_weight: 6
+      - key: build_durability
+        label: Build durability
+        definition: How well it holds up to daily use and keeps working for years without wearing out.
+        default_weight: 6
+      - key: safety
+        label: Safety
+        definition: How well it protects you and your home from harm, such as burns, electric shocks or sharp edges.
+        default_weight: 6
+      - key: after_sales_service
+        label: After-sales service
+        definition: How easy it is to get help, repairs, spare parts and warranty service from the seller or brand.
+        default_weight: 4
+      - key: value_for_money
+        label: Value for money
+        definition: How much you get for the price you pay, compared with other choices at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+# Category-level sets: these replace the family set for the categories named here.
+categories:
+  laptop:
+    criteria:
+      - key: processor_speed
+        label: Processor speed
+        definition: How fast the processor handles heavy work such as coding, video editing or many open apps without slowing down.
+        default_weight: 9
+      - key: memory_and_storage
+        label: RAM and storage
+        definition: How much RAM and SSD space it has, so many apps stay open and your files fit without running out of room.
+        default_weight: 7
+      - key: battery_life
+        label: Battery life
+        definition: How many hours it runs on one charge during real work, so you can use it away from a plug.
+        unit: h
+        default_weight: 7
+      - key: display_quality
+        label: Display quality
+        definition: How sharp, bright and easy on the eyes the screen is for long hours, including use near a sunny window.
+        default_weight: 6
+      - key: keyboard_comfort
+        label: Keyboard comfort
+        definition: How pleasant and accurate the keys feel during long typing sessions, including a backlight for dim rooms.
+        default_weight: 6
+      - key: weight
+        label: Weight
+        definition: How heavy it is to carry every day in a bag; a lighter laptop is easier for travel and college.
+        direction: lower_is_better
+        unit: kg
+        default_weight: 5
+      - key: build_durability
+        label: Build durability
+        definition: How well the body, hinge and ports hold up to daily carrying, opening and closing over several years.
+        default_weight: 5
+      - key: value_for_money
+        label: Value for money
+        definition: How much laptop you get for the price you pay, compared with other models at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  smartphone:
+    criteria:
+      - key: camera_quality
+        label: Camera quality
+        definition: How sharp and natural photos and videos look in daylight and at night, on both the main and front cameras.
+        default_weight: 7
+      - key: battery_life
+        label: Battery life
+        definition: How many hours of real use you get on one charge, so the phone lasts from morning until night.
+        unit: h
+        default_weight: 8
+      - key: processor_speed
+        label: Processor speed
+        definition: How smoothly apps, games and many open tabs run without lag, stutter or the phone getting hot.
+        default_weight: 7
+      - key: display_quality
+        label: Display quality
+        definition: How bright, sharp and smooth the screen looks, including outdoors in sunlight and while scrolling quickly.
+        default_weight: 6
+      - key: software_updates
+        label: Software updates
+        definition: How many years of Android or iOS updates and security fixes the maker promises, keeping the phone safe longer.
+        unit: years
+        default_weight: 5
+      - key: storage_space
+        label: Storage space
+        definition: How much built-in storage it has for photos, videos and apps, and whether you can add a memory card.
+        unit: GB
+        default_weight: 5
+      - key: build_durability
+        label: Build durability
+        definition: How well the phone survives drops, scratches, dust and water, based on its glass and water-resistance rating.
+        default_weight: 5
+      - key: value_for_money
+        label: Value for money
+        definition: How much phone you get for the price you pay, compared with other models at the same budget.
+        is_value_for_money: true
+        default_weight: 7
+
+  earbuds:
+    criteria:
+      - key: sound_quality
+        label: Sound quality
+        definition: How clear, balanced and detailed music and voices sound through the earbuds, from deep bass to crisp high notes.
+        default_weight: 8
+      - key: noise_cancellation
+        label: Noise cancellation
+        definition: How well the earbuds block traffic, office chatter and other outside noise, so you can listen at a lower volume.
+        default_weight: 6
+      - key: battery_life
+        label: Battery life
+        definition: How many hours the earbuds play on one charge, plus the extra charges stored in the case.
+        unit: h
+        default_weight: 6
+      - key: fit_and_comfort
+        label: Fit and comfort
+        definition: How securely and comfortably the earbuds sit in your ears for hours, even while walking or working out.
+        default_weight: 7
+      - key: call_quality
+        label: Call quality
+        definition: How clearly people hear your voice on calls, even on a busy street or in a windy place.
+        default_weight: 5
+      - key: connection_stability
+        label: Connection stability
+        definition: How reliably the earbuds stay connected to your phone without drops, delays or trouble pairing.
+        default_weight: 5
+      - key: water_resistance
+        label: Water resistance
+        definition: How well the earbuds survive sweat and rain, shown by their IPX rating, which matters for gym and outdoor use.
+        default_weight: 4
+      - key: value_for_money
+        label: Value for money
+        definition: How much you get from these earbuds for the price you pay, compared with others at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  headphones:
+    criteria:
+      - key: sound_quality
+        label: Sound quality
+        definition: How clear, balanced and detailed music, films and voices sound, from deep bass to crisp high notes.
+        default_weight: 9
+      - key: noise_cancellation
+        label: Noise cancellation
+        definition: How well the headphones block outside noise such as traffic, fans or flights, so you hear only your audio.
+        default_weight: 7
+      - key: comfort
+        label: Comfort
+        definition: How comfortable the ear cups and headband feel during long hours, without pressing, heating up or causing headaches.
+        default_weight: 7
+      - key: battery_life
+        label: Battery life
+        definition: How many hours the headphones play wirelessly on one charge before you need to plug them in.
+        unit: h
+        default_weight: 5
+      - key: mic_quality
+        label: Microphone quality
+        definition: How clearly others hear your voice on calls and online meetings, even when the room is noisy.
+        default_weight: 5
+      - key: connection_stability
+        label: Connection stability
+        definition: How reliably the Bluetooth link stays steady without drops, and how easily it switches between your devices.
+        default_weight: 4
+      - key: build_durability
+        label: Build durability
+        definition: How well the headband, hinges and ear pads hold up to daily use, travel and being folded into a bag.
+        default_weight: 5
+      - key: value_for_money
+        label: Value for money
+        definition: How much you get from these headphones for the price you pay, compared with others at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  smartwatch:
+    criteria:
+      - key: health_tracking_accuracy
+        label: Health tracking accuracy
+        definition: How closely its heart-rate, step, sleep and workout readings match real values, so you can trust your health data.
+        default_weight: 8
+      - key: battery_life
+        label: Battery life
+        definition: How many days the watch runs on one charge with normal use, so you are not charging it every night.
+        unit: days
+        default_weight: 7
+      - key: display_readability
+        label: Display readability
+        definition: How easy the screen is to read at a glance in bright sunlight, indoors and in the dark.
+        default_weight: 6
+      - key: phone_compatibility
+        label: Phone compatibility
+        definition: How well it works with your phone and its app, including notifications, calls, music control and syncing data.
+        default_weight: 6
+      - key: gps_accuracy
+        label: GPS accuracy
+        definition: How accurately its GPS tracks your route, distance and pace on runs, walks and rides without your phone.
+        default_weight: 5
+      - key: comfort_and_fit
+        label: Comfort and fit
+        definition: How comfortable the strap and case feel on your wrist all day and night, without rubbing or sweating.
+        default_weight: 5
+      - key: water_resistance
+        label: Water resistance
+        definition: How safely it handles water, such as rain, showers and swimming, shown by its water-resistance rating.
+        unit: m
+        default_weight: 4
+      - key: value_for_money
+        label: Value for money
+        definition: How much smartwatch you get for the price you pay, compared with other models at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  television:
+    criteria:
+      - key: picture_quality
+        label: Picture quality
+        definition: How sharp, bright and lifelike the picture looks, including colours, contrast and detail in dark movie scenes.
+        default_weight: 9
+      - key: screen_size_fit
+        label: Screen size for your room
+        definition: Whether the screen size suits your room and viewing distance, so it feels big enough without straining your eyes.
+        default_weight: 6
+      - key: sound_quality
+        label: Sound quality
+        definition: How clear and full the built-in speakers sound for dialogue and music, without needing a separate soundbar.
+        default_weight: 6
+      - key: smart_tv_software
+        label: Smart TV software
+        definition: How smooth and complete the built-in apps and menus are, and how long the maker keeps updating them.
+        default_weight: 5
+      - key: motion_handling
+        label: Motion handling
+        definition: How smoothly fast scenes such as sports and games play without blur or judder, helped by a higher refresh rate.
+        default_weight: 5
+      - key: connectivity
+        label: Ports and connectivity
+        definition: Which ports and wireless links it has, such as HDMI, USB and Wi-Fi, for consoles, set-top boxes and speakers.
+        default_weight: 4
+      - key: reliability
+        label: Reliability
+        definition: How rarely the panel, power board or software fails, based on what owners report after years of use.
+        default_weight: 6
+      - key: value_for_money
+        label: Value for money
+        definition: How much TV you get for the price you pay, compared with other models at the same budget.
+        is_value_for_money: true
+        default_weight: 7
+
+  standing_desk:
+    criteria:
+      - key: height_range
+        label: Height range
+        definition: How low and high the desk goes, so both your sitting and standing heights fit your body and chair.
+        default_weight: 8
+      - key: stability
+        label: Stability
+        definition: How steady the desk stays at standing height, without wobbling when you type, write or lean on it.
+        default_weight: 9
+      - key: lift_motor
+        label: Motor speed and noise
+        definition: How quickly and quietly the motor raises and lowers the desk, which matters in shared rooms and on calls.
+        default_weight: 5
+      - key: load_capacity
+        label: Load capacity
+        definition: How much weight the desk can hold safely, such as monitors, a laptop, books and other equipment.
+        unit: kg
+        default_weight: 6
+      - key: desktop_size
+        label: Desktop size
+        definition: How much surface the top gives you for screens, keyboard and papers, and whether it fits your room.
+        default_weight: 6
+      - key: height_presets
+        label: Memory presets
+        definition: How many saved heights the control panel can store, so switching between sitting and standing takes one touch.
+        default_weight: 3
+      - key: build_durability
+        label: Build durability
+        definition: How well the frame, legs and motor keep working smoothly over years of daily raising and lowering.
+        default_weight: 6
+      - key: value_for_money
+        label: Value for money
+        definition: How much standing desk you get for the price you pay, compared with other models at the same budget.
+        is_value_for_money: true
+        default_weight: 6
+
+  mattress:
+    criteria:
+      - key: firmness_support
+        label: Support and firmness
+        definition: How well it keeps your spine straight while you sleep, with the right firmness for your weight and sleeping position.
+        default_weight: 9
+      - key: pressure_relief
+        label: Pressure relief
+        definition: How well it softens pressure on your shoulders and hips, so you wake up without aches or numbness.
+        default_weight: 8
+      - key: cooling
+        label: Temperature control
+        definition: How well the foam and cover let heat escape, so you stay cool through hot summer nights.
+        default_weight: 6
+      - key: motion_isolation
+        label: Motion isolation
+        definition: How little you feel your partner turning over or getting up, so one person does not wake the other.
+        default_weight: 5
+      - key: edge_support
+        label: Edge support
+        definition: How firm the edges stay when you sit or sleep near them, so the whole bed stays usable.
+        default_weight: 4
+      - key: build_durability
+        label: Build durability
+        definition: How long the foam and springs keep their shape without sagging or forming dips over years of nightly use.
+        default_weight: 7
+      - key: trial_and_warranty
+        label: Trial and warranty
+        definition: How many nights you can try it at home and how many years the maker covers sagging or defects.
+        default_weight: 5
+      - key: value_for_money
+        label: Value for money
+        definition: How much mattress you get for the price you pay, compared with other models at the same budget.
+        is_value_for_money: true
+        default_weight: 6
