@@ -1,0 +1,22 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "amount": {
+      "minimum": 0,
+      "title": "Amount",
+      "type": "number"
+    },
+    "currency": {
+      "default": "INR",
+      "pattern": "^[A-Z]{3}$",
+      "title": "Currency",
+      "type": "string"
+    }
+  },
+  "required": [
+    "amount",
+    "currency"
+  ],
+  "title": "Money",
+  "type": "object"
+}

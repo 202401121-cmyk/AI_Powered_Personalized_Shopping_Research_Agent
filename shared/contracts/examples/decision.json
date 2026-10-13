@@ -1,0 +1,217 @@
+{
+  "ranked": [
+    {
+      "product_id": "prd_nova_book_14",
+      "rank": 1,
+      "score": 78.3,
+      "contributions": [
+        {
+          "criterion_key": "cpu_performance",
+          "score": 7.5,
+          "normalized_weight": 0.20454545454545456,
+          "contribution": 1.5341,
+          "state": "known"
+        },
+        {
+          "criterion_key": "battery_life",
+          "score": 8.0,
+          "normalized_weight": 0.1590909090909091,
+          "contribution": 1.2727,
+          "state": "known"
+        },
+        {
+          "criterion_key": "keyboard_comfort",
+          "score": 9.0,
+          "normalized_weight": 0.18181818181818182,
+          "contribution": 1.6364,
+          "state": "known"
+        },
+        {
+          "criterion_key": "display_quality",
+          "score": 7.0,
+          "normalized_weight": 0.09090909090909091,
+          "contribution": 0.6364,
+          "state": "known"
+        },
+        {
+          "criterion_key": "weight",
+          "score": 7.5,
+          "normalized_weight": 0.13636363636363635,
+          "contribution": 1.0227,
+          "state": "known"
+        },
+        {
+          "criterion_key": "build_durability",
+          "score": 7.0,
+          "normalized_weight": 0.09090909090909091,
+          "contribution": 0.6364,
+          "state": "known"
+        },
+        {
+          "criterion_key": "value_for_money",
+          "score": 8.0,
+          "normalized_weight": 0.13636363636363635,
+          "contribution": 1.0909,
+          "state": "known"
+        }
+      ],
+      "coverage": 1.0,
+      "chance_first": 0.46,
+      "confidence": "medium",
+      "label": "best_match",
+      "gap_to_leader": 0.0,
+      "tied_with": [
+        "prd_kestrel_slim_15"
+      ],
+      "separating_criterion": "battery_life"
+    },
+    {
+      "product_id": "prd_kestrel_slim_15",
+      "rank": 2,
+      "score": 75.91,
+      "contributions": [
+        {
+          "criterion_key": "cpu_performance",
+          "score": 8.0,
+          "normalized_weight": 0.20454545454545456,
+          "contribution": 1.6364,
+          "state": "known"
+        },
+        {
+          "criterion_key": "battery_life",
+          "score": 7.0,
+          "normalized_weight": 0.1590909090909091,
+          "contribution": 1.1136,
+          "state": "disputed"
+        },
+        {
+          "criterion_key": "keyboard_comfort",
+          "score": 7.5,
+          "normalized_weight": 0.18181818181818182,
+          "contribution": 1.3636,
+          "state": "known"
+        },
+        {
+          "criterion_key": "display_quality",
+          "score": 7.5,
+          "normalized_weight": 0.09090909090909091,
+          "contribution": 0.6818,
+          "state": "known"
+        },
+        {
+          "criterion_key": "weight",
+          "score": 8.0,
+          "normalized_weight": 0.13636363636363635,
+          "contribution": 1.0909,
+          "state": "known"
+        },
+        {
+          "criterion_key": "build_durability",
+          "score": 7.5,
+          "normalized_weight": 0.09090909090909091,
+          "contribution": 0.6818,
+          "state": "known"
+        },
+        {
+          "criterion_key": "value_for_money",
+          "score": 7.5,
+          "normalized_weight": 0.13636363636363635,
+          "contribution": 1.0227,
+          "state": "known"
+        }
+      ],
+      "coverage": 1.0,
+      "chance_first": 0.41,
+      "confidence": "medium",
+      "label": "runner_up",
+      "gap_to_leader": 2.39,
+      "tied_with": [
+        "prd_nova_book_14"
+      ],
+      "separating_criterion": "battery_life"
+    },
+    {
+      "product_id": "prd_orion_play_15",
+      "rank": 3,
+      "score": 67.05,
+      "contributions": [
+        {
+          "criterion_key": "cpu_performance",
+          "score": 9.0,
+          "normalized_weight": 0.20454545454545456,
+          "contribution": 1.8409,
+          "state": "known"
+        },
+        {
+          "criterion_key": "battery_life",
+          "score": 5.0,
+          "normalized_weight": 0.1590909090909091,
+          "contribution": 0.7955,
+          "state": "known"
+        },
+        {
+          "criterion_key": "keyboard_comfort",
+          "score": 6.5,
+          "normalized_weight": 0.18181818181818182,
+          "contribution": 1.1818,
+          "state": "known"
+        },
+        {
+          "criterion_key": "display_quality",
+          "score": 8.0,
+          "normalized_weight": 0.09090909090909091,
+          "contribution": 0.7273,
+          "state": "known"
+        },
+        {
+          "criterion_key": "weight",
+          "score": 4.0,
+          "normalized_weight": 0.13636363636363635,
+          "contribution": 0.5455,
+          "state": "known"
+        },
+        {
+          "criterion_key": "build_durability",
+          "score": 7.25,
+          "normalized_weight": 0.09090909090909091,
+          "contribution": 0.6591,
+          "state": "estimated"
+        },
+        {
+          "criterion_key": "value_for_money",
+          "score": 7.0,
+          "normalized_weight": 0.13636363636363635,
+          "contribution": 0.9545,
+          "state": "known"
+        }
+      ],
+      "coverage": 0.902,
+      "chance_first": 0.13,
+      "confidence": "low",
+      "label": null,
+      "gap_to_leader": 11.25,
+      "tied_with": [],
+      "separating_criterion": null
+    }
+  ],
+  "filtered": [
+    {
+      "product_id": "prd_aurora_air_13",
+      "group": "filtered_out",
+      "reasons": [
+        "₹84,990 is above your ₹70,000 budget"
+      ],
+      "rule_attribute": "price"
+    },
+    {
+      "product_id": "prd_vela_pro_14",
+      "group": "cant_tell",
+      "reasons": [
+        "We couldn't confirm it has at least 16 GB RAM"
+      ],
+      "rule_attribute": "ram_gb"
+    }
+  ],
+  "relaxation_hint": null,
+  "method": "monte_carlo"
+}

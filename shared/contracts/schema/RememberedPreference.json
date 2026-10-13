@@ -1,0 +1,59 @@
+{
+  "additionalProperties": false,
+  "description": "A past preference found by meaning (US-06). Shown as 'remembered', changeable in one click.",
+  "properties": {
+    "text": {
+      "maxLength": 200,
+      "title": "Text",
+      "type": "string"
+    },
+    "criterion_key": {
+      "anyOf": [
+        {
+          "maxLength": 64,
+          "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Criterion Key"
+    },
+    "weight": {
+      "anyOf": [
+        {
+          "maximum": 10.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Weight"
+    },
+    "similarity": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Similarity",
+      "type": "number"
+    },
+    "age_days": {
+      "minimum": 0,
+      "title": "Age Days",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "text",
+    "criterion_key",
+    "weight",
+    "similarity",
+    "age_days"
+  ],
+  "title": "RememberedPreference",
+  "type": "object"
+}

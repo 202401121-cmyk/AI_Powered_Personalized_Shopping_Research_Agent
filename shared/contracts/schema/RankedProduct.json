@@ -1,0 +1,179 @@
+{
+  "$defs": {
+    "Contribution": {
+      "additionalProperties": false,
+      "properties": {
+        "criterion_key": {
+          "maxLength": 64,
+          "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+          "title": "Criterion Key",
+          "type": "string"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "maximum": 10.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Score"
+        },
+        "normalized_weight": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Normalized Weight",
+          "type": "number"
+        },
+        "contribution": {
+          "description": "score x weight, the share of the final score",
+          "minimum": 0,
+          "title": "Contribution",
+          "type": "number"
+        },
+        "state": {
+          "$ref": "#/$defs/ValueState"
+        }
+      },
+      "required": [
+        "criterion_key",
+        "score",
+        "normalized_weight",
+        "contribution",
+        "state"
+      ],
+      "title": "Contribution",
+      "type": "object"
+    },
+    "ValueState": {
+      "enum": [
+        "known",
+        "disputed",
+        "unknown",
+        "estimated"
+      ],
+      "title": "ValueState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "product_id": {
+      "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+      "title": "Product Id",
+      "type": "string"
+    },
+    "rank": {
+      "minimum": 1,
+      "title": "Rank",
+      "type": "integer"
+    },
+    "score": {
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Score",
+      "type": "number"
+    },
+    "contributions": {
+      "items": {
+        "$ref": "#/$defs/Contribution"
+      },
+      "minItems": 1,
+      "title": "Contributions",
+      "type": "array"
+    },
+    "coverage": {
+      "description": "Share of the score backed by real evidence, not estimates",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Coverage",
+      "type": "number"
+    },
+    "chance_first": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "From simulations; None with the plain score",
+      "title": "Chance First"
+    },
+    "confidence": {
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "title": "Confidence",
+      "type": "string"
+    },
+    "label": {
+      "anyOf": [
+        {
+          "enum": [
+            "best_match",
+            "runner_up"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Label"
+    },
+    "gap_to_leader": {
+      "minimum": 0,
+      "title": "Gap To Leader",
+      "type": "number"
+    },
+    "tied_with": {
+      "description": "'Too close to call'",
+      "items": {
+        "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+        "type": "string"
+      },
+      "title": "Tied With",
+      "type": "array"
+    },
+    "separating_criterion": {
+      "anyOf": [
+        {
+          "maxLength": 64,
+          "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Separating Criterion"
+    }
+  },
+  "required": [
+    "product_id",
+    "rank",
+    "score",
+    "contributions",
+    "coverage",
+    "chance_first",
+    "confidence",
+    "label",
+    "gap_to_leader",
+    "tied_with",
+    "separating_criterion"
+  ],
+  "title": "RankedProduct",
+  "type": "object"
+}

@@ -1,0 +1,60 @@
+{
+  "$defs": {
+    "ValueState": {
+      "enum": [
+        "known",
+        "disputed",
+        "unknown",
+        "estimated"
+      ],
+      "title": "ValueState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "criterion_key": {
+      "maxLength": 64,
+      "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+      "title": "Criterion Key",
+      "type": "string"
+    },
+    "score": {
+      "anyOf": [
+        {
+          "maximum": 10.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Score"
+    },
+    "normalized_weight": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Normalized Weight",
+      "type": "number"
+    },
+    "contribution": {
+      "description": "score x weight, the share of the final score",
+      "minimum": 0,
+      "title": "Contribution",
+      "type": "number"
+    },
+    "state": {
+      "$ref": "#/$defs/ValueState"
+    }
+  },
+  "required": [
+    "criterion_key",
+    "score",
+    "normalized_weight",
+    "contribution",
+    "state"
+  ],
+  "title": "Contribution",
+  "type": "object"
+}

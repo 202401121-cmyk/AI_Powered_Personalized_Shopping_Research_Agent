@@ -1,0 +1,101 @@
+{
+  "$defs": {
+    "ExplanationSentence": {
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "maxLength": 400,
+          "minLength": 3,
+          "title": "Text",
+          "type": "string"
+        },
+        "claim_ids": {
+          "items": {
+            "pattern": "^clm_[a-f0-9]{8,64}$",
+            "type": "string"
+          },
+          "title": "Claim Ids",
+          "type": "array"
+        },
+        "supported": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "NLI verdict; None when not checked",
+          "title": "Supported"
+        }
+      },
+      "required": [
+        "text",
+        "claim_ids",
+        "supported"
+      ],
+      "title": "ExplanationSentence",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "product_id": {
+      "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+      "title": "Product Id",
+      "type": "string"
+    },
+    "sentences": {
+      "items": {
+        "$ref": "#/$defs/ExplanationSentence"
+      },
+      "maxItems": 8,
+      "minItems": 1,
+      "title": "Sentences",
+      "type": "array"
+    },
+    "trade_off": {
+      "anyOf": [
+        {
+          "maxLength": 300,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Trade Off"
+    },
+    "unverified": {
+      "description": "Criteria we could not verify, named",
+      "items": {
+        "maxLength": 64,
+        "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+        "type": "string"
+      },
+      "title": "Unverified",
+      "type": "array"
+    },
+    "method": {
+      "enum": [
+        "llm_checked",
+        "llm_unchecked",
+        "template"
+      ],
+      "title": "Method",
+      "type": "string"
+    }
+  },
+  "required": [
+    "product_id",
+    "sentences",
+    "trade_off",
+    "unverified",
+    "method"
+  ],
+  "title": "Explanation",
+  "type": "object"
+}

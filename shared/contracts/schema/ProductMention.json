@@ -1,0 +1,64 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "raw_name": {
+      "maxLength": 150,
+      "minLength": 1,
+      "title": "Raw Name",
+      "type": "string"
+    },
+    "is_product": {
+      "description": "False for product types such as 'memory foam' (US-14)",
+      "title": "Is Product",
+      "type": "boolean"
+    },
+    "brand": {
+      "anyOf": [
+        {
+          "maxLength": 60,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Brand"
+    },
+    "author": {
+      "anyOf": [
+        {
+          "maxLength": 80,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "For distinct-recommender counts",
+      "title": "Author"
+    },
+    "recommends": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Recommends"
+    }
+  },
+  "required": [
+    "raw_name",
+    "is_product",
+    "brand",
+    "author",
+    "recommends"
+  ],
+  "title": "ProductMention",
+  "type": "object"
+}

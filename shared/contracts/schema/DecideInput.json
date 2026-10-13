@@ -1,0 +1,601 @@
+{
+  "$defs": {
+    "Budget": {
+      "additionalProperties": false,
+      "properties": {
+        "min": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Money"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "max": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Money"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "min",
+        "max"
+      ],
+      "title": "Budget",
+      "type": "object"
+    },
+    "CommunitySignal": {
+      "additionalProperties": false,
+      "description": "US-42: whether communities agree about a product.",
+      "properties": {
+        "product_id": {
+          "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+          "title": "Product Id",
+          "type": "string"
+        },
+        "label": {
+          "enum": [
+            "consistent",
+            "split",
+            "single_source"
+          ],
+          "title": "Label",
+          "type": "string"
+        },
+        "communities": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Communities",
+          "type": "array"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "maxLength": 300,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "required": [
+        "product_id",
+        "label",
+        "communities",
+        "note"
+      ],
+      "title": "CommunitySignal",
+      "type": "object"
+    },
+    "Exclusion": {
+      "additionalProperties": false,
+      "description": "Something the user never wants to see (FR-10).",
+      "properties": {
+        "kind": {
+          "enum": [
+            "brand",
+            "model",
+            "feature",
+            "seller"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "value": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        },
+        "always": {
+          "default": false,
+          "description": "True = save to memory for future searches",
+          "title": "Always",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "value",
+        "always"
+      ],
+      "title": "Exclusion",
+      "type": "object"
+    },
+    "HardRule": {
+      "additionalProperties": false,
+      "description": "A must-have. Hard rules only filter products; they never change the order (DR-08).",
+      "properties": {
+        "attribute": {
+          "description": "Criterion or spec key, e.g. 'weight_kg' or 'has_ois'",
+          "maxLength": 64,
+          "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+          "title": "Attribute",
+          "type": "string"
+        },
+        "operator": {
+          "enum": [
+            "<=",
+            ">=",
+            "==",
+            "!=",
+            "in",
+            "not_in",
+            "contains"
+          ],
+          "title": "Operator",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          ],
+          "title": "Value"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "maxLength": 16,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "source_text": {
+          "description": "What the user actually said",
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Source Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attribute",
+        "operator",
+        "value",
+        "unit",
+        "source_text"
+      ],
+      "title": "HardRule",
+      "type": "object"
+    },
+    "Money": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "minimum": 0,
+          "title": "Amount",
+          "type": "number"
+        },
+        "currency": {
+          "default": "INR",
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "title": "Money",
+      "type": "object"
+    },
+    "Product": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "description": "Canonical display name",
+          "maxLength": 150,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "brand": {
+          "anyOf": [
+            {
+              "maxLength": 60,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Brand"
+        },
+        "kind": {
+          "default": "product",
+          "description": "product_type for commodities like 'ring-shank nails'",
+          "enum": [
+            "product",
+            "product_type"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "aliases": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 50,
+          "title": "Aliases",
+          "type": "array"
+        },
+        "variants": {
+          "items": {
+            "$ref": "#/$defs/Variant"
+          },
+          "maxItems": 20,
+          "title": "Variants",
+          "type": "array"
+        },
+        "recommender_count": {
+          "default": 0,
+          "description": "Distinct authors who recommended it",
+          "minimum": 0,
+          "title": "Recommender Count",
+          "type": "integer"
+        },
+        "weighted_mentions": {
+          "default": 0.0,
+          "description": "Mentions after the 180-day half-life",
+          "minimum": 0,
+          "title": "Weighted Mentions",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "brand",
+        "kind",
+        "aliases",
+        "variants",
+        "recommender_count",
+        "weighted_mentions"
+      ],
+      "title": "Product",
+      "type": "object"
+    },
+    "ResolvedValue": {
+      "additionalProperties": false,
+      "properties": {
+        "product_id": {
+          "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+          "title": "Product Id",
+          "type": "string"
+        },
+        "criterion_key": {
+          "description": "A criterion key, or a hard-rule attribute such as 'ram_gb'",
+          "maxLength": 64,
+          "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+          "title": "Criterion Key",
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/ValueState"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "maximum": 10.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Score"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "supporting_claim_ids": {
+          "items": {
+            "pattern": "^clm_[a-f0-9]{8,64}$",
+            "type": "string"
+          },
+          "title": "Supporting Claim Ids",
+          "type": "array"
+        },
+        "conflicting_claim_ids": {
+          "items": {
+            "pattern": "^clm_[a-f0-9]{8,64}$",
+            "type": "string"
+          },
+          "title": "Conflicting Claim Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "product_id",
+        "criterion_key",
+        "state",
+        "score",
+        "value",
+        "confidence",
+        "supporting_claim_ids",
+        "conflicting_claim_ids"
+      ],
+      "title": "ResolvedValue",
+      "type": "object"
+    },
+    "Rubric": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "maxLength": 64,
+          "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+          "title": "Category",
+          "type": "string"
+        },
+        "use_case": {
+          "anyOf": [
+            {
+              "maxLength": 120,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Use Case"
+        },
+        "region": {
+          "default": "IN",
+          "pattern": "^(?:[A-Z]{2}|GLOBAL)$",
+          "title": "Region",
+          "type": "string"
+        },
+        "budget": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Budget"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "hard_rules": {
+          "items": {
+            "$ref": "#/$defs/HardRule"
+          },
+          "maxItems": 20,
+          "title": "Hard Rules",
+          "type": "array"
+        },
+        "exclusions": {
+          "items": {
+            "$ref": "#/$defs/Exclusion"
+          },
+          "maxItems": 30,
+          "title": "Exclusions",
+          "type": "array"
+        },
+        "weights": {
+          "items": {
+            "$ref": "#/$defs/WeightedCriterion"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Weights",
+          "type": "array"
+        }
+      },
+      "required": [
+        "category",
+        "use_case",
+        "region",
+        "budget",
+        "hard_rules",
+        "exclusions",
+        "weights"
+      ],
+      "title": "Rubric",
+      "type": "object"
+    },
+    "ValueState": {
+      "enum": [
+        "known",
+        "disputed",
+        "unknown",
+        "estimated"
+      ],
+      "title": "ValueState",
+      "type": "string"
+    },
+    "Variant": {
+      "additionalProperties": false,
+      "description": "DR-02: versions that differ in price or specs are separate variants of one product.",
+      "properties": {
+        "id": {
+          "pattern": "^var_[A-Za-z0-9_-]{3,64}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "description": "e.g. '16 GB RAM / 512 GB SSD / India'",
+          "maxLength": 120,
+          "title": "Label",
+          "type": "string"
+        },
+        "attributes": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "e.g. {'ram': '16GB', 'region': 'IN'}",
+          "title": "Attributes",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "attributes"
+      ],
+      "title": "Variant",
+      "type": "object"
+    },
+    "WeightedCriterion": {
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "maxLength": 64,
+          "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+          "title": "Key",
+          "type": "string"
+        },
+        "weight": {
+          "description": "0 to 10, as the user sees it",
+          "maximum": 10.0,
+          "minimum": 0.0,
+          "title": "Weight",
+          "type": "number"
+        },
+        "normalized": {
+          "description": "Share of the total; all normalized values add up to 1",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Normalized",
+          "type": "number"
+        },
+        "origin": {
+          "enum": [
+            "answered",
+            "remembered",
+            "default",
+            "skipped",
+            "manual"
+          ],
+          "title": "Origin",
+          "type": "string"
+        },
+        "uncertainty": {
+          "default": 0.5,
+          "description": "How unsure we are of this weight; used by the interview and simulations",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Uncertainty",
+          "type": "number"
+        }
+      },
+      "required": [
+        "key",
+        "weight",
+        "normalized",
+        "origin",
+        "uncertainty"
+      ],
+      "title": "WeightedCriterion",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "rubric": {
+      "$ref": "#/$defs/Rubric"
+    },
+    "products": {
+      "items": {
+        "$ref": "#/$defs/Product"
+      },
+      "maxItems": 200,
+      "title": "Products",
+      "type": "array"
+    },
+    "values": {
+      "items": {
+        "$ref": "#/$defs/ResolvedValue"
+      },
+      "title": "Values",
+      "type": "array"
+    },
+    "community": {
+      "items": {
+        "$ref": "#/$defs/CommunitySignal"
+      },
+      "title": "Community",
+      "type": "array"
+    },
+    "seed": {
+      "default": 42,
+      "description": "Same inputs + same seed = same output (US-19)",
+      "title": "Seed",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "rubric",
+    "products",
+    "values",
+    "community",
+    "seed"
+  ],
+  "title": "DecideInput",
+  "type": "object"
+}

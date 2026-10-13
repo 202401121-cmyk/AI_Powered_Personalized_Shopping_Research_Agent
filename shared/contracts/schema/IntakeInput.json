@@ -1,0 +1,38 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "raw_query": {
+      "maxLength": 1000,
+      "minLength": 1,
+      "title": "Raw Query",
+      "type": "string"
+    },
+    "previous_clarification_reply": {
+      "anyOf": [
+        {
+          "maxLength": 500,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Previous Clarification Reply"
+    },
+    "unclear_attempts": {
+      "default": 0,
+      "maximum": 2,
+      "minimum": 0,
+      "title": "Unclear Attempts",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "raw_query",
+    "previous_clarification_reply",
+    "unclear_attempts"
+  ],
+  "title": "IntakeInput",
+  "type": "object"
+}

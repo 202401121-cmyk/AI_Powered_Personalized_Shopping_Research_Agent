@@ -1,0 +1,199 @@
+{
+  "$defs": {
+    "InterviewQuestion": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^q_[a-z0-9_]{1,40}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "criterion_key": {
+          "maxLength": 64,
+          "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+          "title": "Criterion Key",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 300,
+          "minLength": 5,
+          "title": "Text",
+          "type": "string"
+        },
+        "quick_replies": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 6,
+          "title": "Quick Replies",
+          "type": "array"
+        },
+        "why_asking": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Why Asking"
+        }
+      },
+      "required": [
+        "id",
+        "criterion_key",
+        "text",
+        "quick_replies",
+        "why_asking"
+      ],
+      "title": "InterviewQuestion",
+      "type": "object"
+    },
+    "ReplyClassification": {
+      "additionalProperties": false,
+      "properties": {
+        "reply_type": {
+          "$ref": "#/$defs/ReplyType"
+        },
+        "weight": {
+          "anyOf": [
+            {
+              "maximum": 10.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Weight implied by the answer, if any",
+          "title": "Weight"
+        },
+        "user_question": {
+          "anyOf": [
+            {
+              "maxLength": 300,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "User Question"
+        },
+        "corrects_question_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Corrects Question Id"
+        },
+        "confidence": {
+          "default": 1.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "classified_by": {
+          "default": "llm",
+          "enum": [
+            "llm",
+            "fallback"
+          ],
+          "title": "Classified By",
+          "type": "string"
+        }
+      },
+      "required": [
+        "reply_type",
+        "weight",
+        "user_question",
+        "corrects_question_id",
+        "confidence",
+        "classified_by"
+      ],
+      "title": "ReplyClassification",
+      "type": "object"
+    },
+    "ReplyType": {
+      "enum": [
+        "answer",
+        "question",
+        "answer_with_question",
+        "skip",
+        "correction",
+        "off_topic",
+        "unclear"
+      ],
+      "title": "ReplyType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "question": {
+      "$ref": "#/$defs/InterviewQuestion"
+    },
+    "reply_text": {
+      "anyOf": [
+        {
+          "maxLength": 500,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reply Text"
+    },
+    "classification": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ReplyClassification"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "status": {
+      "enum": [
+        "pending",
+        "answered",
+        "skipped",
+        "remembered"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "unclear_count": {
+      "default": 0,
+      "maximum": 2,
+      "minimum": 0,
+      "title": "Unclear Count",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "question",
+    "reply_text",
+    "classification",
+    "status",
+    "unclear_count"
+  ],
+  "title": "AskedQuestion",
+  "type": "object"
+}

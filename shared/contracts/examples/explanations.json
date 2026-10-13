@@ -1,0 +1,42 @@
+[
+  {
+    "product_id": "prd_nova_book_14",
+    "sentences": [
+      {
+        "text": "Its keyboard is the most comfortable of the three, which matters most for long coding.",
+        "claim_ids": [
+          "clm_5807c6297c20c05e"
+        ],
+        "supported": true
+      },
+      {
+        "text": "Battery life is strong, so you can work a full day away from a plug.",
+        "claim_ids": [
+          "clm_bf7c2488fe2eda5f"
+        ],
+        "supported": true
+      }
+    ],
+    "trade_off": "The Orion Play 15 compiles faster, but it is much heavier.",
+    "unverified": [],
+    "method": "llm_checked"
+  },
+  {
+    "product_id": "prd_kestrel_slim_15",
+    "sentences": [
+      {
+        "text": "It is the lightest of the three and slightly faster than the Nova Book 14.",
+        "claim_ids": [
+          "clm_8fe73a640ab049ef",
+          "clm_dc147cd38e1e6839"
+        ],
+        "supported": true
+      }
+    ],
+    "trade_off": "Its battery life is disputed: the maker says 10 hours, an owner reports about 6.",
+    "unverified": [
+      "battery_life"
+    ],
+    "method": "llm_checked"
+  }
+]

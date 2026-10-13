@@ -1,0 +1,32 @@
+{
+  "additionalProperties": false,
+  "description": "DR-02: versions that differ in price or specs are separate variants of one product.",
+  "properties": {
+    "id": {
+      "pattern": "^var_[A-Za-z0-9_-]{3,64}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "label": {
+      "description": "e.g. '16 GB RAM / 512 GB SSD / India'",
+      "maxLength": 120,
+      "title": "Label",
+      "type": "string"
+    },
+    "attributes": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "e.g. {'ram': '16GB', 'region': 'IN'}",
+      "title": "Attributes",
+      "type": "object"
+    }
+  },
+  "required": [
+    "id",
+    "label",
+    "attributes"
+  ],
+  "title": "Variant",
+  "type": "object"
+}

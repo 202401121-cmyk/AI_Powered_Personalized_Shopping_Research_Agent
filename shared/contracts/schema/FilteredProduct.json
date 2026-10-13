@@ -1,0 +1,50 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "product_id": {
+      "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+      "title": "Product Id",
+      "type": "string"
+    },
+    "group": {
+      "enum": [
+        "filtered_out",
+        "cant_tell"
+      ],
+      "title": "Group",
+      "type": "string"
+    },
+    "reasons": {
+      "description": "e.g. '₹94,990 is above your ₹80,000 budget'",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 10,
+      "minItems": 1,
+      "title": "Reasons",
+      "type": "array"
+    },
+    "rule_attribute": {
+      "anyOf": [
+        {
+          "maxLength": 64,
+          "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Rule Attribute"
+    }
+  },
+  "required": [
+    "product_id",
+    "group",
+    "reasons",
+    "rule_attribute"
+  ],
+  "title": "FilteredProduct",
+  "type": "object"
+}

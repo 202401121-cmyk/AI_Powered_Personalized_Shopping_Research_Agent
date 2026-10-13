@@ -1,0 +1,75 @@
+{
+  "additionalProperties": false,
+  "description": "A must-have. Hard rules only filter products; they never change the order (DR-08).",
+  "properties": {
+    "attribute": {
+      "description": "Criterion or spec key, e.g. 'weight_kg' or 'has_ois'",
+      "maxLength": 64,
+      "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+      "title": "Attribute",
+      "type": "string"
+    },
+    "operator": {
+      "enum": [
+        "<=",
+        ">=",
+        "==",
+        "!=",
+        "in",
+        "not_in",
+        "contains"
+      ],
+      "title": "Operator",
+      "type": "string"
+    },
+    "value": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      ],
+      "title": "Value"
+    },
+    "unit": {
+      "anyOf": [
+        {
+          "maxLength": 16,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Unit"
+    },
+    "source_text": {
+      "description": "What the user actually said",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Source Text",
+      "type": "string"
+    }
+  },
+  "required": [
+    "attribute",
+    "operator",
+    "value",
+    "unit",
+    "source_text"
+  ],
+  "title": "HardRule",
+  "type": "object"
+}

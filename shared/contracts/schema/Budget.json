@@ -1,0 +1,57 @@
+{
+  "$defs": {
+    "Money": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "minimum": 0,
+          "title": "Amount",
+          "type": "number"
+        },
+        "currency": {
+          "default": "INR",
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "title": "Money",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "min": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Money"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "max": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Money"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "min",
+    "max"
+  ],
+  "title": "Budget",
+  "type": "object"
+}

@@ -1,0 +1,39 @@
+{
+  "offers": [
+    {
+      "product_id": "prd_nova_book_14",
+      "variant_id": "var_nova_book_14_16_512_in",
+      "store": "Example Store",
+      "url": "https://store.example.com/nova-book-14-16gb-512gb",
+      "listing_title": "Nova Book 14 (16GB RAM, 512GB SSD) Laptop",
+      "price": {
+        "amount": 64990.0,
+        "currency": "INR"
+      },
+      "availability": "in_stock",
+      "as_of": "2026-10-03T08:00:00Z",
+      "title_matched": true,
+      "variant_matched": true,
+      "over_budget": false
+    },
+    {
+      "product_id": "prd_kestrel_slim_15",
+      "variant_id": null,
+      "store": "Another Store",
+      "url": "https://shop.example.org/kestrel-slim-15",
+      "listing_title": "Kestrel Slim 15 Laptop",
+      "price": {
+        "amount": 67490.0,
+        "currency": "INR"
+      },
+      "availability": "in_stock",
+      "as_of": "2026-10-02T04:00:00Z",
+      "title_matched": true,
+      "variant_matched": false,
+      "over_budget": false
+    }
+  ],
+  "no_offer": {
+    "prd_orion_play_15": "https://www.google.com/search?tbm=shop&q=Orion+Play+15"
+  }
+}

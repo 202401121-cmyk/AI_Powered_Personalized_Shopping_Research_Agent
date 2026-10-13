@@ -1,0 +1,48 @@
+{
+  "$defs": {
+    "SourceType": {
+      "enum": [
+        "reddit",
+        "youtube",
+        "web_search",
+        "review_site",
+        "manufacturer",
+        "lab",
+        "retailer"
+      ],
+      "title": "SourceType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "source_type": {
+      "$ref": "#/$defs/SourceType"
+    },
+    "reason": {
+      "enum": [
+        "timeout",
+        "rate_limited",
+        "blocked",
+        "not_found",
+        "quota_exhausted",
+        "error"
+      ],
+      "title": "Reason",
+      "type": "string"
+    },
+    "detail": {
+      "default": "",
+      "maxLength": 300,
+      "title": "Detail",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_type",
+    "reason",
+    "detail"
+  ],
+  "title": "SourceFailure",
+  "type": "object"
+}

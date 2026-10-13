@@ -1,0 +1,35 @@
+{
+  "additionalProperties": false,
+  "description": "Something the user never wants to see (FR-10).",
+  "properties": {
+    "kind": {
+      "enum": [
+        "brand",
+        "model",
+        "feature",
+        "seller"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "value": {
+      "maxLength": 80,
+      "minLength": 1,
+      "title": "Value",
+      "type": "string"
+    },
+    "always": {
+      "default": false,
+      "description": "True = save to memory for future searches",
+      "title": "Always",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "kind",
+    "value",
+    "always"
+  ],
+  "title": "Exclusion",
+  "type": "object"
+}

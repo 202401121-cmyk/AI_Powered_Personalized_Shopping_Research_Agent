@@ -1,0 +1,480 @@
+{
+  "$defs": {
+    "Claim": {
+      "additionalProperties": false,
+      "description": "One statement about one product, always with its exact quote (build rule 4).",
+      "properties": {
+        "id": {
+          "pattern": "^clm_[a-f0-9]{8,64}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "source_id": {
+          "pattern": "^src_[a-f0-9]{8,64}$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "product_raw_name": {
+          "maxLength": 150,
+          "minLength": 1,
+          "title": "Product Raw Name",
+          "type": "string"
+        },
+        "criterion_key": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "None = general opinion",
+          "title": "Criterion Key"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A spec value, e.g. 1.4 for kg",
+          "title": "Value"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "maxLength": 16,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "maximum": 10.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "0 to 10 judgement for this criterion",
+          "title": "Score"
+        },
+        "quote": {
+          "description": "Exact words from the source",
+          "maxLength": 600,
+          "minLength": 3,
+          "title": "Quote",
+          "type": "string"
+        },
+        "claim_type": {
+          "$ref": "#/$defs/ClaimType"
+        },
+        "polarity": {
+          "enum": [
+            "positive",
+            "negative",
+            "neutral"
+          ],
+          "title": "Polarity",
+          "type": "string"
+        },
+        "weight": {
+          "default": 1.0,
+          "description": "Lowered by sarcasm, weak complaints (US-42)",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Weight",
+          "type": "number"
+        },
+        "retrieved_at": {
+          "format": "date-time",
+          "title": "Retrieved At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "source_id",
+        "product_raw_name",
+        "criterion_key",
+        "value",
+        "unit",
+        "score",
+        "quote",
+        "claim_type",
+        "polarity",
+        "weight",
+        "retrieved_at"
+      ],
+      "title": "Claim",
+      "type": "object"
+    },
+    "ClaimType": {
+      "description": "DR-05: community posts are experience or opinion, never spec, unless verified.",
+      "enum": [
+        "spec",
+        "experience",
+        "opinion"
+      ],
+      "title": "ClaimType",
+      "type": "string"
+    },
+    "MatchResult": {
+      "additionalProperties": false,
+      "properties": {
+        "products": {
+          "items": {
+            "$ref": "#/$defs/Product"
+          },
+          "maxItems": 200,
+          "title": "Products",
+          "type": "array"
+        },
+        "alias_map": {
+          "additionalProperties": {
+            "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+            "type": "string"
+          },
+          "description": "Every raw name -> its canonical product",
+          "title": "Alias Map",
+          "type": "object"
+        },
+        "unmatched": {
+          "description": "Names kept apart because matching was unsure",
+          "items": {
+            "type": "string"
+          },
+          "title": "Unmatched",
+          "type": "array"
+        },
+        "method": {
+          "enum": [
+            "model",
+            "fuzzy"
+          ],
+          "title": "Method",
+          "type": "string"
+        }
+      },
+      "required": [
+        "products",
+        "alias_map",
+        "unmatched",
+        "method"
+      ],
+      "title": "MatchResult",
+      "type": "object"
+    },
+    "Product": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "description": "Canonical display name",
+          "maxLength": 150,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "brand": {
+          "anyOf": [
+            {
+              "maxLength": 60,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Brand"
+        },
+        "kind": {
+          "default": "product",
+          "description": "product_type for commodities like 'ring-shank nails'",
+          "enum": [
+            "product",
+            "product_type"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "aliases": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 50,
+          "title": "Aliases",
+          "type": "array"
+        },
+        "variants": {
+          "items": {
+            "$ref": "#/$defs/Variant"
+          },
+          "maxItems": 20,
+          "title": "Variants",
+          "type": "array"
+        },
+        "recommender_count": {
+          "default": 0,
+          "description": "Distinct authors who recommended it",
+          "minimum": 0,
+          "title": "Recommender Count",
+          "type": "integer"
+        },
+        "weighted_mentions": {
+          "default": 0.0,
+          "description": "Mentions after the 180-day half-life",
+          "minimum": 0,
+          "title": "Weighted Mentions",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "brand",
+        "kind",
+        "aliases",
+        "variants",
+        "recommender_count",
+        "weighted_mentions"
+      ],
+      "title": "Product",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^src_[a-f0-9]{8,64}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "url": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/SourceType"
+        },
+        "tier": {
+          "$ref": "#/$defs/SourceTier"
+        },
+        "title": {
+          "maxLength": 300,
+          "title": "Title",
+          "type": "string"
+        },
+        "text": {
+          "description": "Cleaned, HTML stripped, capped",
+          "maxLength": 12000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "text_hash": {
+          "description": "sha256 of text, used for caching",
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Text Hash",
+          "type": "string"
+        },
+        "fetched_at": {
+          "format": "date-time",
+          "title": "Fetched At",
+          "type": "string"
+        },
+        "published_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Published At"
+        },
+        "community": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "e.g. 'r/SuggestALaptop'",
+          "title": "Community"
+        },
+        "quality": {
+          "default": 0.5,
+          "description": "US-13 thread or page quality score",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Quality",
+          "type": "number"
+        },
+        "via": {
+          "enum": [
+            "api",
+            "direct",
+            "jina",
+            "search_snippet"
+          ],
+          "title": "Via",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "url",
+        "type",
+        "tier",
+        "title",
+        "text",
+        "text_hash",
+        "fetched_at",
+        "published_at",
+        "community",
+        "quality",
+        "via"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "SourceTier": {
+      "description": "DR-03: lower number = more authoritative for factual specs.",
+      "enum": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "title": "SourceTier",
+      "type": "integer"
+    },
+    "SourceType": {
+      "enum": [
+        "reddit",
+        "youtube",
+        "web_search",
+        "review_site",
+        "manufacturer",
+        "lab",
+        "retailer"
+      ],
+      "title": "SourceType",
+      "type": "string"
+    },
+    "Variant": {
+      "additionalProperties": false,
+      "description": "DR-02: versions that differ in price or specs are separate variants of one product.",
+      "properties": {
+        "id": {
+          "pattern": "^var_[A-Za-z0-9_-]{3,64}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "description": "e.g. '16 GB RAM / 512 GB SSD / India'",
+          "maxLength": 120,
+          "title": "Label",
+          "type": "string"
+        },
+        "attributes": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "e.g. {'ram': '16GB', 'region': 'IN'}",
+          "title": "Attributes",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "attributes"
+      ],
+      "title": "Variant",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "match": {
+      "$ref": "#/$defs/MatchResult"
+    },
+    "claims": {
+      "items": {
+        "$ref": "#/$defs/Claim"
+      },
+      "maxItems": 5000,
+      "title": "Claims",
+      "type": "array"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/Source"
+      },
+      "maxItems": 60,
+      "title": "Sources",
+      "type": "array"
+    },
+    "criterion_keys": {
+      "description": "Criteria plus any hard-rule attributes to resolve",
+      "items": {
+        "maxLength": 64,
+        "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+        "type": "string"
+      },
+      "maxItems": 30,
+      "minItems": 1,
+      "title": "Criterion Keys",
+      "type": "array"
+    }
+  },
+  "required": [
+    "match",
+    "claims",
+    "sources",
+    "criterion_keys"
+  ],
+  "title": "VerifyInput",
+  "type": "object"
+}

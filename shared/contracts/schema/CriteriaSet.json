@@ -1,0 +1,125 @@
+{
+  "$defs": {
+    "Criterion": {
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "description": "Stable id, e.g. 'battery_life'",
+          "maxLength": 64,
+          "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+          "title": "Key",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 60,
+          "minLength": 2,
+          "title": "Label",
+          "type": "string"
+        },
+        "definition": {
+          "description": "One plain-English line, also used to answer 'what is X?' in the interview",
+          "maxLength": 300,
+          "minLength": 10,
+          "title": "Definition",
+          "type": "string"
+        },
+        "direction": {
+          "$ref": "#/$defs/Direction",
+          "default": "higher_is_better"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "maxLength": 16,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "default_weight": {
+          "default": 5.0,
+          "maximum": 10.0,
+          "minimum": 0.0,
+          "title": "Default Weight",
+          "type": "number"
+        },
+        "is_value_for_money": {
+          "default": false,
+          "title": "Is Value For Money",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "key",
+        "label",
+        "definition",
+        "direction",
+        "unit",
+        "default_weight",
+        "is_value_for_money"
+      ],
+      "title": "Criterion",
+      "type": "object"
+    },
+    "Direction": {
+      "enum": [
+        "higher_is_better",
+        "lower_is_better"
+      ],
+      "title": "Direction",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "category": {
+      "maxLength": 64,
+      "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+      "title": "Category",
+      "type": "string"
+    },
+    "use_case": {
+      "anyOf": [
+        {
+          "maxLength": 120,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Use Case"
+    },
+    "criteria": {
+      "items": {
+        "$ref": "#/$defs/Criterion"
+      },
+      "maxItems": 10,
+      "minItems": 6,
+      "title": "Criteria",
+      "type": "array"
+    },
+    "source": {
+      "enum": [
+        "generated",
+        "cached",
+        "fallback"
+      ],
+      "title": "Source",
+      "type": "string"
+    }
+  },
+  "required": [
+    "category",
+    "use_case",
+    "criteria",
+    "source"
+  ],
+  "title": "CriteriaSet",
+  "type": "object"
+}

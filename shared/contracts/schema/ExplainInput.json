@@ -1,0 +1,360 @@
+{
+  "$defs": {
+    "Claim": {
+      "additionalProperties": false,
+      "description": "One statement about one product, always with its exact quote (build rule 4).",
+      "properties": {
+        "id": {
+          "pattern": "^clm_[a-f0-9]{8,64}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "source_id": {
+          "pattern": "^src_[a-f0-9]{8,64}$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "product_raw_name": {
+          "maxLength": 150,
+          "minLength": 1,
+          "title": "Product Raw Name",
+          "type": "string"
+        },
+        "criterion_key": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "None = general opinion",
+          "title": "Criterion Key"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A spec value, e.g. 1.4 for kg",
+          "title": "Value"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "maxLength": 16,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "maximum": 10.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "0 to 10 judgement for this criterion",
+          "title": "Score"
+        },
+        "quote": {
+          "description": "Exact words from the source",
+          "maxLength": 600,
+          "minLength": 3,
+          "title": "Quote",
+          "type": "string"
+        },
+        "claim_type": {
+          "$ref": "#/$defs/ClaimType"
+        },
+        "polarity": {
+          "enum": [
+            "positive",
+            "negative",
+            "neutral"
+          ],
+          "title": "Polarity",
+          "type": "string"
+        },
+        "weight": {
+          "default": 1.0,
+          "description": "Lowered by sarcasm, weak complaints (US-42)",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Weight",
+          "type": "number"
+        },
+        "retrieved_at": {
+          "format": "date-time",
+          "title": "Retrieved At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "source_id",
+        "product_raw_name",
+        "criterion_key",
+        "value",
+        "unit",
+        "score",
+        "quote",
+        "claim_type",
+        "polarity",
+        "weight",
+        "retrieved_at"
+      ],
+      "title": "Claim",
+      "type": "object"
+    },
+    "ClaimType": {
+      "description": "DR-05: community posts are experience or opinion, never spec, unless verified.",
+      "enum": [
+        "spec",
+        "experience",
+        "opinion"
+      ],
+      "title": "ClaimType",
+      "type": "string"
+    },
+    "Contribution": {
+      "additionalProperties": false,
+      "properties": {
+        "criterion_key": {
+          "maxLength": 64,
+          "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+          "title": "Criterion Key",
+          "type": "string"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "maximum": 10.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Score"
+        },
+        "normalized_weight": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Normalized Weight",
+          "type": "number"
+        },
+        "contribution": {
+          "description": "score x weight, the share of the final score",
+          "minimum": 0,
+          "title": "Contribution",
+          "type": "number"
+        },
+        "state": {
+          "$ref": "#/$defs/ValueState"
+        }
+      },
+      "required": [
+        "criterion_key",
+        "score",
+        "normalized_weight",
+        "contribution",
+        "state"
+      ],
+      "title": "Contribution",
+      "type": "object"
+    },
+    "RankedProduct": {
+      "additionalProperties": false,
+      "properties": {
+        "product_id": {
+          "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+          "title": "Product Id",
+          "type": "string"
+        },
+        "rank": {
+          "minimum": 1,
+          "title": "Rank",
+          "type": "integer"
+        },
+        "score": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Score",
+          "type": "number"
+        },
+        "contributions": {
+          "items": {
+            "$ref": "#/$defs/Contribution"
+          },
+          "minItems": 1,
+          "title": "Contributions",
+          "type": "array"
+        },
+        "coverage": {
+          "description": "Share of the score backed by real evidence, not estimates",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Coverage",
+          "type": "number"
+        },
+        "chance_first": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "From simulations; None with the plain score",
+          "title": "Chance First"
+        },
+        "confidence": {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ],
+          "title": "Confidence",
+          "type": "string"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "enum": [
+                "best_match",
+                "runner_up"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Label"
+        },
+        "gap_to_leader": {
+          "minimum": 0,
+          "title": "Gap To Leader",
+          "type": "number"
+        },
+        "tied_with": {
+          "description": "'Too close to call'",
+          "items": {
+            "pattern": "^prd_[A-Za-z0-9_-]{3,64}$",
+            "type": "string"
+          },
+          "title": "Tied With",
+          "type": "array"
+        },
+        "separating_criterion": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Separating Criterion"
+        }
+      },
+      "required": [
+        "product_id",
+        "rank",
+        "score",
+        "contributions",
+        "coverage",
+        "chance_first",
+        "confidence",
+        "label",
+        "gap_to_leader",
+        "tied_with",
+        "separating_criterion"
+      ],
+      "title": "RankedProduct",
+      "type": "object"
+    },
+    "ValueState": {
+      "enum": [
+        "known",
+        "disputed",
+        "unknown",
+        "estimated"
+      ],
+      "title": "ValueState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "ranked": {
+      "description": "Explain the top products only",
+      "items": {
+        "$ref": "#/$defs/RankedProduct"
+      },
+      "maxItems": 10,
+      "title": "Ranked",
+      "type": "array"
+    },
+    "claims": {
+      "description": "The evidence the sentences may cite",
+      "items": {
+        "$ref": "#/$defs/Claim"
+      },
+      "title": "Claims",
+      "type": "array"
+    },
+    "user_priorities": {
+      "items": {
+        "maxLength": 64,
+        "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+        "type": "string"
+      },
+      "maxItems": 10,
+      "title": "User Priorities",
+      "type": "array"
+    }
+  },
+  "required": [
+    "ranked",
+    "claims",
+    "user_priorities"
+  ],
+  "title": "ExplainInput",
+  "type": "object"
+}
