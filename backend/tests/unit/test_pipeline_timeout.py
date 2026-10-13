@@ -6,8 +6,13 @@ The slow stages sleep in a background thread; the test only waits for the (tiny)
 from __future__ import annotations
 
 import time
+from concurrent.futures import ALL_COMPLETED
+from typing import Any
+
+import pytest
 
 import app.contracts as C
+from app import pipeline
 from app.contracts import examples as ex
 from app.pipeline import InMemoryResultStore, PipelineRunner, default_search_stages
 
@@ -77,3 +82,30 @@ def test_running_out_of_search_time_skips_the_remaining_stages() -> None:
     assert result.coverage_note is not None
     assert "ran out of time" in result.coverage_note
     assert C.SearchResult.model_validate_json(result.model_dump_json()) == result
+
+
+def test_a_stage_cut_off_by_the_search_deadline_ends_the_search(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Regression: on GitHub's Windows runners a timed wait can wake a moment before the deadline.
+
+    The stage still times out, but a sliver of search time seems to be left, so the runner used to start the next
+    stages instead of skipping them. Here every wait wakes halfway to its deadline, so the race happens on every
+    machine, every time.
+    """
+    real_wait = pipeline.wait
+
+    def early_wait(fs: Any, timeout: float | None = None, return_when: str = ALL_COMPLETED) -> Any:
+        early = None if timeout is None else timeout / 2
+        return real_wait(fs, timeout=early, return_when=return_when)
+
+    monkeypatch.setattr(pipeline, "wait", early_wait)
+    stages = default_search_stages()
+    stages.research = _SlowResearch()
+
+    result = PipelineRunner(stages, InMemoryResultStore(), search_time_limit_s=0.1).run(_request())
+
+    statuses = [(r.stage, r.status) for r in result.stage_reports]
+    assert statuses[0] == (C.StageName.RESEARCH, C.StageStatus.TIMEOUT)
+    assert all(status is C.StageStatus.SKIPPED for _, status in statuses[1:]), statuses
+    assert len(statuses) == 8
+    assert result.partial
+    assert result.coverage_note is not None and "ran out of time" in result.coverage_note
