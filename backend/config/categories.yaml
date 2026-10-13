@@ -1,8 +1,9 @@
 # Product categories the intake stage can recognise without an LLM (US-02). Loaded by app/intake/lexicon.py.
 #
-# categories: slug (the id used everywhere), label (shown to the user), synonyms (lowercase words people type,
-#             including Indian English). Matching is whole-word and case-insensitive, prefers the longest
-#             synonym, and also accepts a plural ending ("laptops", "watches").
+# categories: slug (the id used everywhere), label (shown to the user), family (which fallback criteria set
+#             in criteria_fallback.yaml it uses, US-03), synonyms (lowercase words people type, including
+#             Indian English). Matching is whole-word and case-insensitive, prefers the longest synonym, and
+#             also accepts a plural ending ("laptops", "watches").
 # ambiguous:  words that need a question before research, with the categories offered as answers.
 #             An ambiguous word only applies when no category synonym matched ("smart watch" is not ambiguous).
 # suggestions: the categories offered when a request names no product at all ("something for my mom").
@@ -14,164 +15,213 @@ categories:
   # --- computing and phones ---------------------------------------------------------------------------
   - slug: laptop
     label: Laptop
+    family: computing
     synonyms: [laptop, macbook, ultrabook, chromebook, gaming laptop, notebook pc]
   - slug: smartphone
     label: Smartphone
+    family: phone
     synonyms: [smartphone, smart phone, phone, mobile, mobile phone, cellphone, cell phone, iphone, android phone]
   - slug: tablet
     label: Tablet
+    family: computing
     synonyms: [tablet, ipad, android tablet]
   - slug: monitor
     label: Computer monitor
+    family: computing
     synonyms: [computer monitor, pc monitor, gaming monitor, desktop monitor, external monitor, display monitor]
   - slug: keyboard
     label: Keyboard
+    family: computing
     synonyms: [keyboard, mechanical keyboard, wireless keyboard]
   - slug: mouse
     label: Mouse
+    family: computing
     synonyms: [mouse, mice, gaming mouse, wireless mouse]
   - slug: printer
     label: Printer
+    family: computing
     synonyms: [printer, ink tank printer, laser printer, inkjet printer]
   - slug: router
     label: Wi-Fi router
+    family: computing
     synonyms: [router, wifi router, wi fi router, mesh router, mesh wifi]
   - slug: webcam
     label: Webcam
+    family: computing
     synonyms: [webcam, web camera, web cam]
   - slug: power_bank
     label: Power bank
+    family: generic
     synonyms: [power bank, powerbank]
   - slug: gaming_console
     label: Gaming console
+    family: generic
     synonyms: [gaming console, console, playstation, ps5, xbox, nintendo switch]
 
   # --- audio and wearables ------------------------------------------------------------------------------
   - slug: earbuds
     label: Earbuds
+    family: audio
     synonyms: [earbuds, earbud, ear buds, tws, true wireless, earphones, earphone, in ear, airpods, buds]
   - slug: headphones
     label: Headphones
+    family: audio
     synonyms: [headphones, headphone, headset, over ear headphones, on ear headphones, anc headphones]
   - slug: bluetooth_speaker
     label: Bluetooth speaker
+    family: audio
     synonyms: [bluetooth speaker, portable speaker, wireless speaker, bt speaker, party speaker]
   - slug: home_theatre
     label: Home theatre
+    family: audio
     synonyms: [home theatre, home theater, soundbar, sound bar, home theatre system]
   - slug: smart_speaker
     label: Smart speaker
+    family: audio
     synonyms: [smart speaker, echo dot, alexa speaker, google nest, google home]
   - slug: smartwatch
     label: Smartwatch
+    family: wearable
     synonyms: [smartwatch, smart watch, apple watch, galaxy watch, android watch]
   - slug: fitness_band
     label: Fitness band
+    family: wearable
     synonyms: [fitness band, fitness tracker, smart band, activity tracker, smartband]
   - slug: analog_watch
     label: Analog watch
+    family: wearable
     synonyms: [analog watch, analogue watch, quartz watch, automatic watch, mechanical watch, chronograph]
 
   # --- screens and cameras ------------------------------------------------------------------------------
   - slug: television
     label: Television
+    family: tv_and_camera
     synonyms: [tv, television, smart tv, led tv, oled tv, qled tv, android tv]
   - slug: projector
     label: Projector
+    family: tv_and_camera
     synonyms: [projector, home projector, mini projector]
   - slug: camera
     label: Camera
+    family: tv_and_camera
     synonyms: [camera, dslr, mirrorless camera, action camera, vlogging camera, digital camera]
 
   # --- home appliances ------------------------------------------------------------------------------------
   - slug: refrigerator
     label: Refrigerator
+    family: large_appliance
     synonyms: [refrigerator, fridge, double door fridge, single door fridge, side by side fridge]
   - slug: washing_machine
     label: Washing machine
+    family: large_appliance
     synonyms: [washing machine, washer, front load washing machine, top load washing machine]
   - slug: air_conditioner
     label: Air conditioner
+    family: large_appliance
     synonyms: [ac, air conditioner, split ac, window ac, inverter ac, aircon]
   - slug: air_purifier
     label: Air purifier
+    family: home_comfort
     synonyms: [air purifier, air cleaner]
   - slug: water_purifier
     label: Water purifier
+    family: large_appliance
     synonyms: [water purifier, ro purifier, ro water purifier, water filter, uv purifier]
   - slug: geyser
     label: Geyser (water heater)
+    family: large_appliance
     synonyms: [geyser, water heater, instant geyser, storage geyser]
   - slug: ceiling_fan
     label: Ceiling fan
+    family: home_comfort
     synonyms: [ceiling fan, fan, bldc fan]
   - slug: vacuum_cleaner
     label: Vacuum cleaner
+    family: home_comfort
     synonyms: [vacuum cleaner, vacuum, robot vacuum, robotic vacuum, robot vacuum cleaner]
   - slug: iron
     label: Iron
+    family: home_comfort
     synonyms: [steam iron, dry iron, clothes iron, iron box]
   - slug: dishwasher
     label: Dishwasher
+    family: large_appliance
     synonyms: [dishwasher, dish washer]
 
   # --- kitchen --------------------------------------------------------------------------------------------
   - slug: mixer_grinder
     label: Mixer grinder
+    family: kitchen_appliance
     synonyms: [mixer grinder, mixer, mixie, juicer mixer grinder, grinder]
   - slug: microwave
     label: Microwave oven
+    family: kitchen_appliance
     synonyms: [microwave, microwave oven, convection microwave]
   - slug: induction_cooktop
     label: Induction cooktop
+    family: kitchen_appliance
     synonyms: [induction cooktop, induction, induction stove, induction chulha]
   - slug: electric_kettle
     label: Electric kettle
+    family: kitchen_appliance
     synonyms: [electric kettle, kettle]
   - slug: air_fryer
     label: Air fryer
+    family: kitchen_appliance
     synonyms: [air fryer, airfryer]
   - slug: kitchen_chimney
     label: Kitchen chimney
+    family: kitchen_appliance
     synonyms: [kitchen chimney, chimney, auto clean chimney]
 
   # --- personal care --------------------------------------------------------------------------------------
   - slug: trimmer
     label: Trimmer
+    family: personal_care
     synonyms: [trimmer, beard trimmer, electric shaver, shaver, body groomer]
   - slug: hair_dryer
     label: Hair dryer
+    family: personal_care
     synonyms: [hair dryer, hairdryer, blow dryer]
   - slug: electric_toothbrush
     label: Electric toothbrush
+    family: personal_care
     synonyms: [electric toothbrush, electric tooth brush]
 
   # --- furniture and gear ---------------------------------------------------------------------------------
   - slug: mattress
     label: Mattress
+    family: furniture
     synonyms: [mattress, bed mattress, memory foam mattress]
   - slug: office_chair
     label: Office chair
+    family: furniture
     synonyms: [office chair, ergonomic chair, gaming chair, study chair, desk chair]
   - slug: standing_desk
     label: Standing desk
+    family: furniture
     synonyms: [standing desk, sit stand desk, height adjustable desk, standing table]
   - slug: running_shoes
     label: Running shoes
+    family: footwear_and_bags
     synonyms: [running shoes, running shoe, jogging shoes, sports shoes]
   - slug: backpack
     label: Backpack
+    family: footwear_and_bags
     synonyms: [backpack, laptop bag, laptop backpack, school bag, rucksack]
 
   # --- baby -----------------------------------------------------------------------------------------------
   - slug: pram
     label: Pram (stroller)
+    family: baby
     synonyms: [pram, stroller, baby stroller, pushchair, buggy]
   - slug: car_seat
     label: Baby car seat
+    family: baby
     synonyms: [car seat, baby car seat, infant car seat]
   - slug: baby_monitor
     label: Baby monitor
+    family: baby
     synonyms: [baby monitor, video baby monitor]
 
 ambiguous:

@@ -41,6 +41,7 @@ class CategoryEntry(BaseModel):
 
     slug: str = Field(pattern=SLUG_PATTERN, max_length=64)
     label: str = Field(min_length=2, max_length=60)
+    family: str = Field(pattern=SLUG_PATTERN, max_length=64, description="Fallback criteria set to use (US-03)")
     synonyms: list[str] = Field(min_length=1)
 
 
@@ -121,6 +122,11 @@ class Lexicon:
 
     def label(self, slug: str) -> str:
         return self.categories[slug].label
+
+    def family_of(self, slug: str) -> str | None:
+        """The product family a known category belongs to; None for a category the lexicon does not know."""
+        entry = self.categories.get(slug)
+        return entry.family if entry else None
 
     def labels(self, slugs: list[str]) -> list[str]:
         return [self.label(s) for s in slugs]
