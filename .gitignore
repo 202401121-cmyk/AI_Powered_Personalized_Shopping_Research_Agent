@@ -14,6 +14,8 @@ venv/
 .ruff_cache/
 .coverage
 htmlcov/
+# Local caches such as generated criteria (US-03); rebuilt on demand
+backend/.cache/
 
 # Node / Next.js
 node_modules/
