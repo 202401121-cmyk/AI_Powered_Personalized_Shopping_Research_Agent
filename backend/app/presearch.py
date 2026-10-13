@@ -21,7 +21,7 @@ from app.contracts import (
     Stage,
     StageContext,
 )
-from app.criteria import CriteriaStage
+from app.criteria import CriteriaStage, CriteriaStore, FileCriteriaStore
 from app.intake import IntakeStage
 from app.interview import InterviewStage
 from app.llm import build_llm_client
@@ -40,6 +40,12 @@ def default_llm() -> LLMClient:
     return build_llm_client()
 
 
+@lru_cache(maxsize=1)
+def default_criteria_store() -> CriteriaStore:
+    """Saved criteria in backend/.cache/criteria/ (US-03). Tests use an in-memory store instead (tests/conftest.py)."""
+    return FileCriteriaStore()
+
+
 def start_request(query: str, previous_reply: str | None = None, unclear_attempts: int = 0) -> Intent:
     """Understand the user's request, or their reply to our follow-up question (US-01, US-02)."""
     inp = IntakeInput(raw_query=query, previous_clarification_reply=previous_reply, unclear_attempts=unclear_attempts)
@@ -51,7 +57,7 @@ def make_criteria(intent: Intent) -> CriteriaSet:
     if intent.category is None or intent.category_label is None:
         raise ValueError("the request has no product category yet; ask the clarification question first")
     inp = CriteriaInput(category=intent.category, category_label=intent.category_label, use_case=intent.use_case)
-    return _run(CriteriaStage(), inp)
+    return _run(CriteriaStage(default_llm(), default_criteria_store()), inp)
 
 
 def interview_turn(turn: InterviewTurn) -> InterviewStep:

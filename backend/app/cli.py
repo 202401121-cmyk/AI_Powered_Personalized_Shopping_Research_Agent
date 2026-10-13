@@ -2,9 +2,10 @@
 
     python -m app.cli "best laptop for coding under 70k"
 
-Shows what it understood from the request (US-02), asks the follow-up question instead of searching when the
-product is unclear (US-01), answers the first interview question with "medium", runs the search pipeline and
-prints the shortlist. Works with no API keys: intake then uses its keyword rules.
+Shows what it understood from the request (US-02) and the criteria it will compare (US-03), asks the follow-up
+question instead of searching when the product is unclear (US-01), answers the first interview question with
+"medium", runs the search pipeline and prints the shortlist. Works with no API keys: intake then uses its keyword
+rules and criteria use the product family's fallback set.
 """
 
 from __future__ import annotations
@@ -15,6 +16,7 @@ import sys
 
 from app.contracts import (
     Budget,
+    CriteriaSet,
     Intent,
     InterviewState,
     InterviewTurn,
@@ -48,7 +50,9 @@ def main(argv: list[str] | None = None) -> int:
         return 1  # no research until the category is known (US-01)
     print(f"Understood: {describe(intent)}")
 
-    state = InterviewState(session_id=CLI_SESSION_ID, intent=intent, criteria=make_criteria(intent))
+    criteria = make_criteria(intent)
+    print(criteria_block(criteria))
+    state = InterviewState(session_id=CLI_SESSION_ID, intent=intent, criteria=criteria)
     step = interview_turn(InterviewTurn(state=state))
     if step.question is not None:
         print(f"Q: {step.message}")
@@ -74,6 +78,13 @@ def describe(intent: Intent) -> str:
     parts += [f"excluding {', '.join(e.value for e in intent.exclusions)}"] if intent.exclusions else []
     parts += [f"region {intent.region}", f"detected by {intent.detected_by}"]
     return " · ".join(parts)
+
+
+def criteria_block(criteria: CriteriaSet) -> str:
+    """The criteria the search will compare, each with its plain-English definition (US-03)."""
+    lines = [f"Criteria ({criteria.source}):"]
+    lines += [f"  - {c.label}: {c.definition}" for c in criteria.criteria]
+    return "\n".join(lines)
 
 
 def clarification(intent: Intent) -> str:
