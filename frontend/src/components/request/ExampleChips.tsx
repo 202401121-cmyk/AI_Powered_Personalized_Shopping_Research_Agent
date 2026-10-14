@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Sparkles } from "lucide-react";
+import { Quote } from "lucide-react";
 
 export interface ExampleChipItem {
   id: string;
@@ -39,7 +39,7 @@ export function ExampleChips({
   return (
     <div className="mt-3" role="region" aria-label="Example shopping requests">
       <div className="flex items-center gap-1.5 text-xs text-muted font-body mb-2">
-        <Sparkles size={13} className="text-brand shrink-0" aria-hidden="true" />
+        <Quote size={13} className="text-brand shrink-0" aria-hidden="true" />
         <span>Try an example request:</span>
       </div>
 

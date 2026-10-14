@@ -1,3 +1,4 @@
+import { detectBudgetFromQuery } from "@/lib/budget";
 import type { Intent } from "@/types/contracts/Intent";
 
 export interface IntakeSubmission {
@@ -5,6 +6,7 @@ export interface IntakeSubmission {
   sessionId: string;
   selectedCategoryOption?: string;
   unclearTurnCount: number;
+  forceError?: boolean;
 }
 
 export interface IntakeResult {
@@ -27,6 +29,15 @@ export const DEFAULT_CLARIFICATION_OPTIONS = [
   "Something else",
 ];
 
+export const WATCH_CLARIFICATION_OPTIONS = [
+  "Wristwatch",
+  "Smartwatch",
+  "Fitness tracker",
+  "Something else",
+];
+
+export const INTAKE_ERROR_MESSAGE = "We could not check that request. Try again.";
+
 /**
  * Simulates the backend Stage 1 intake (US-01 / US-02) using shared contract shapes.
  * Follows US-01 acceptance criteria strictly.
@@ -36,9 +47,14 @@ export async function processIntakeRequest({
   sessionId,
   selectedCategoryOption,
   unclearTurnCount,
+  forceError = false,
 }: IntakeSubmission): Promise<IntakeResult> {
   const trimmed = rawQuery.trim();
   const lower = trimmed.toLowerCase();
+
+  if (forceError || lower === "trigger error") {
+    throw new Error("INTAKE_UNAVAILABLE");
+  }
 
   // If a clarification button was clicked
   if (selectedCategoryOption) {
@@ -146,9 +162,7 @@ export async function processIntakeRequest({
         category: "laptop",
         category_label: "Laptop",
         use_case: lower.includes("coding") ? "coding" : lower.includes("gaming") ? "gaming" : "general",
-        budget: lower.includes("70k") || lower.includes("70000")
-          ? { min: null, max: { amount: 70000.0, currency: "INR" } }
-          : null,
+        budget: budgetFromQuery(trimmed),
         region: "IN",
         hard_rules: lower.includes("16 gb") || lower.includes("16gb")
           ? [
@@ -205,6 +219,14 @@ export async function processIntakeRequest({
     };
   }
 
+  if (/\bsmart[\s-]?watch\b/.test(lower)) {
+    return readyResult(trimmed, sessionId, "smartwatch", "Smartwatch", lower.includes("fitness") ? "fitness" : "general");
+  }
+
+  if (/\bwristwatch\b/.test(lower)) {
+    return readyResult(trimmed, sessionId, "wristwatch", "Wristwatch", "general");
+  }
+
   if (lower.includes("headphone") || lower.includes("earphone") || lower.includes("earbuds")) {
     return {
       intent: {
@@ -212,7 +234,7 @@ export async function processIntakeRequest({
         category: "headphones",
         category_label: "Headphones",
         use_case: lower.includes("commute") ? "commute" : "general",
-        budget: null,
+        budget: budgetFromQuery(trimmed),
         region: "IN",
         hard_rules: [],
         exclusions: [],
@@ -228,7 +250,33 @@ export async function processIntakeRequest({
     };
   }
 
-  // 4. Request with no product type (e.g., "something for my mom", "a gift for a friend")
+  // 4. Ambiguous "watch" (US-02) — ask which kind before researching
+  const mentionsWatch = /\bwatch(?:es)?\b/.test(lower);
+  const watchAlreadyClear = /\bsmart[\s-]?watch\b/.test(lower) || /\bwristwatch\b/.test(lower);
+  if (mentionsWatch && !watchAlreadyClear) {
+    return {
+      intent: {
+        raw_query: trimmed,
+        category: null,
+        category_label: null,
+        use_case: null,
+        budget: budgetFromQuery(trimmed),
+        region: "IN",
+        hard_rules: [],
+        exclusions: [],
+        needs_clarification: true,
+        clarification_question: "Did you mean a wristwatch, a smartwatch, or a fitness tracker?",
+        clarification_options: WATCH_CLARIFICATION_OPTIONS,
+        show_example_requests: false,
+        detected_by: "rules",
+      },
+      sessionId,
+      turnCount: 1,
+      isReadyForResearch: false,
+    };
+  }
+
+  // 5. Request with no product type (e.g., "something for my mom", "a gift for a friend")
   return {
     intent: {
       raw_query: trimmed,
@@ -248,5 +296,54 @@ export async function processIntakeRequest({
     sessionId,
     turnCount: 1,
     isReadyForResearch: false,
+  };
+}
+
+function budgetFromQuery(query: string): Intent["budget"] {
+  const amount = detectBudgetFromQuery(query);
+  if (amount == null) {
+    return null;
+  }
+  return { min: null, max: { amount, currency: "INR" } };
+}
+
+function readyResult(
+  rawQuery: string,
+  sessionId: string,
+  category: string,
+  categoryLabel: string,
+  useCase: string,
+): IntakeResult {
+  const lower = rawQuery.toLowerCase();
+  return {
+    intent: {
+      raw_query: rawQuery,
+      category,
+      category_label: categoryLabel,
+      use_case: useCase,
+      budget: budgetFromQuery(rawQuery),
+      region: "IN",
+      hard_rules:
+        lower.includes("16 gb") || lower.includes("16gb")
+          ? [
+              {
+                attribute: "ram_gb",
+                operator: ">=",
+                value: 16.0,
+                unit: "GB",
+                source_text: "at least 16 GB RAM",
+              },
+            ]
+          : [],
+      exclusions: [],
+      needs_clarification: false,
+      clarification_question: null,
+      clarification_options: [],
+      show_example_requests: false,
+      detected_by: "rules",
+    },
+    sessionId,
+    turnCount: 0,
+    isReadyForResearch: true,
   };
 }

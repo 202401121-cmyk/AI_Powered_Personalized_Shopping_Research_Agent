@@ -77,7 +77,8 @@ The frontend features a unified API interface (`src/lib/api/client.ts`):
 ## 5. Teammate Ownership & Extension Points
 
 * **Teammate #9 (Request Screen & Intake Experience)**:
-  * Owns the user intake screen flow (`src/components/intake/RequestBox.tsx`).
+  * Owns the single-screen request UI (`src/components/request/RequestScreen.tsx`) with states A–J.
+  * Task 1 intake helpers remain in `src/components/intake/` and keep their tests.
 * **Teammate #11 (Interview Chat Window — US-05)**:
   * Owns the interview page (`src/app/interview/page.tsx`).
 * **US-01 (Foundation)**:
