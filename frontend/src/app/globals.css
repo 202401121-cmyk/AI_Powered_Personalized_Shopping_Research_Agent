@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Canvas & Surfaces */
+  --canvas: #F6F7F9;
+  --surface: #FFFFFF;
+  --surface-2: #F1F4F7;
+
+  /* Lines & Borders */
+  --line: #E1E6EC;
+  --line-strong: #CBD3DD;
+
+  /* Inks */
+  --ink: #0E1726;
+  --ink-2: #344054;
+  --muted: #5F6B7A;
+
+  /* Brand: Verdigris */
+  --brand: #0B6B60;
+  --brand-hover: #08524A;
+  --brand-soft: #E2F1EE;
+  --on-brand: #FFFFFF;
+
+  /* Evidence states: Light */
+  --evidence-disputed-ink: #B12345;
+  --evidence-disputed-bg: #FBE7EC;
+  --evidence-estimated-ink: #9A5806;
+  --evidence-estimated-bg: #FCF0DB;
+  --evidence-unverified-ink: #5F6B7A;
+  --evidence-unverified-bg: #EDF0F4;
+  --evidence-info-ink: #2350AE;
+  --evidence-info-bg: #E6EDFA;
+}
+
+.dark {
+  /* Canvas & Surfaces */
+  --canvas: #0B1016;
+  --surface: #111821;
+  --surface-2: #16202B;
+
+  /* Lines & Borders */
+  --line: #1F2A37;
+  --line-strong: #2D3A4A;
+
+  /* Inks */
+  --ink: #E7ECF2;
+  --ink-2: #C4CDD8;
+  --muted: #8E9AA8;
+
+  /* Brand: Verdigris */
+  --brand: #4FC4AF;
+  --brand-hover: #8FE2D3;
+  --brand-soft: #0F2D29;
+  --on-brand: #06201C;
+
+  /* Evidence states: Dark */
+  --evidence-disputed-ink: #F3809B;
+  --evidence-disputed-bg: #3A1622;
+  --evidence-estimated-ink: #E8B15F;
+  --evidence-estimated-bg: #33260F;
+  --evidence-unverified-ink: #8E9AA8;
+  --evidence-unverified-bg: #1C2632;
+  --evidence-info-ink: #8DB0F6;
+  --evidence-info-bg: #15233D;
+}
+
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+
+  body {
+    background-color: var(--canvas);
+    color: var(--ink);
+    font-family: var(--font-public-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height: 1.6;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-schibsted), sans-serif;
+  }
+
+  /* Display typography rule: tracking -0.02em at 32px and up */
+  h1, .text-3xl, .text-4xl, .tracking-display {
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Accessible WCAG AA focus rings */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--canvas), 0 0 0 4px var(--brand);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
