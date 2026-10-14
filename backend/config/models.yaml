@@ -1,0 +1,53 @@
+# LLM providers and model limits (US-26). Loaded and checked at startup by app/llm/config.py.
+#
+# providers: tried in this order when a call fails (fallback order).
+# models:    one row per model; each row has exactly the fields of app.contracts.ModelLimits.
+#            trains_on_free_tier: true means the free tier may train on prompts, so tasks in
+#            PERSONAL_TASKS are never sent there (build rule 8). Gemini must stay true.
+#
+# Free-tier limits change without notice. Run `python -m scripts.smoke_llm` and copy what you see into
+# docs/api-setup.md, then remove the UNVERIFIED comment from each row you confirmed.
+
+providers:
+  - name: groq
+    base_url: https://api.groq.com/openai/v1
+    api_key_env: GROQ_API_KEY
+    request_timeout_s: 30
+  - name: gemini
+    base_url: https://generativelanguage.googleapis.com/v1beta/openai
+    api_key_env: GEMINI_API_KEY
+    request_timeout_s: 30
+  - name: openrouter
+    base_url: https://openrouter.ai/api/v1
+    api_key_env: OPENROUTER_API_KEY
+    request_timeout_s: 30
+  - name: cerebras
+    base_url: https://api.cerebras.ai/v1
+    api_key_env: CEREBRAS_API_KEY
+    request_timeout_s: 30
+
+models:
+  # UNVERIFIED: confirm with scripts/smoke_llm.py
+  - provider: groq
+    model: llama-3.3-70b-versatile
+    context_window_tokens: 131072
+    max_output_tokens: 8192
+    trains_on_free_tier: false
+  # UNVERIFIED: confirm with scripts/smoke_llm.py
+  - provider: gemini
+    model: gemini-2.5-flash
+    context_window_tokens: 1048576
+    max_output_tokens: 8192
+    trains_on_free_tier: true
+  # UNVERIFIED: confirm with scripts/smoke_llm.py
+  - provider: openrouter
+    model: meta-llama/llama-3.3-70b-instruct:free
+    context_window_tokens: 65536
+    max_output_tokens: 4096
+    trains_on_free_tier: false
+  # UNVERIFIED: confirm with scripts/smoke_llm.py
+  - provider: cerebras
+    model: llama-3.3-70b
+    context_window_tokens: 8192
+    max_output_tokens: 2048
+    trains_on_free_tier: false
